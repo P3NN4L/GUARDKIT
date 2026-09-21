@@ -1,6 +1,6 @@
 # guard-kit 接入指南
 
-**端内反诈打分引擎**——两个自训小模型（雷达 + 裁判），纯函数 + 内置权重，零依赖、完全离线、单条推理 <0.1ms，同一份权重覆盖六个平台。本仓库只放接入文档；**引擎源码、模型权重与训练管线在主仓库**（见文末链接）。
+**端内反诈打分引擎（v5）**——两个自训小模型（雷达 + 裁判），**可实现无缝嵌入各类 App**：原生 iOS/Android、RN/Expo、Flutter、小程序、网页与云端。纯函数 + 内置权重，零依赖、完全离线、单条推理 <0.1ms，同一份权重六个平台分数逐位一致。本仓库只放接入文档；**引擎源码、模型权重与训练管线在主仓库**（见文末链接）。
 
 ## 它能做什么
 
@@ -11,7 +11,7 @@
 
 设计特点：
 - **零幻觉**：只输出概率与枚举结论，不生成任何文本
-- **离线**：权重内置（雷达 425KB / 裁判 296KB），无网络请求、无隐私外泄
+- **离线**：权重内置（雷达/裁判 v5，共约 720KB），无网络请求、无隐私外泄
 - **跨平台一致**：六个平台对同一句话打出的分数逐位一致（≤1e-6，黄金向量验收）
 - **校准**：模型说 90% 就是约 90% 的把握（Platt 校准，ECE 3.5%），不是黑盒置信度
 
@@ -47,16 +47,16 @@ let rs = try referee.score("好的我马上转账")
 ```
 
 ### Android（Kotlin/Java）
-把主仓库 `models/radar-v4.json`、`models/referee-v4.json` 放进 `app/src/main/assets/`，`GuardKit.kt` 拖进源码树（依赖 `org.json:json`，Android 自带）：
+把主仓库 `models/radar.json`、`models/referee.json` 放进 `app/src/main/assets/`，`GuardKit.kt` 拖进源码树（依赖 `org.json:json`，Android 自带）：
 ```kotlin
-val radar = Radar(assets.open("radar-v4.json").readBytes().decodeToString())
+val radar = Radar(assets.open("radar.json").readBytes().decodeToString())
 val score = radar.score("把存款转入安全账户配合调查")
 ```
 
 ### Flutter / 纯 Dart
 `pubspec.yaml` 依赖主仓库 `dart/`（路径依赖或发布包），NFKC 由 `unorm_dart` 提供：
 ```dart
-final radar = Radar(File('radar-v4.json').readAsStringSync());
+final radar = Radar(File('radar.json').readAsStringSync());
 final score = radar.score('把存款转入安全账户配合调查');
 ```
 
@@ -99,21 +99,22 @@ GET  /health                    → {"status":"ok","radar":4,"referee":4}
 | `star` | counter=3 / stall=2 / agree=1 / meaningless=1；无词表命中为 null |
 | `confCal` | 校准置信度；**<0.5 时建议 UI 显示中性结果，不评星** |
 
-## 质量指标（v4）
+## 质量指标（v5）
 
 | 指标 | 雷达 | 裁判 |
 |---|---|---|
-| 测试集召回/准确率 | 98.1% | 97.2% |
+| 测试集召回/准确率 | 97.6% | 95.8% |
+| 最新诚实盲测卷 | 召回 100% / 高危 0 误报 | 准确率 100% |
 | 误报 | 6.0%（可疑档）/ **0%（高危档）** | — |
 | 校准误差 ECE | 3.5% | 1.9% |
 | 推理延迟 | 0.06ms/条 | 0.03ms/条 |
 
-训练数据全部自建可审计：手写话术模板 359 个（含 ADCC/警务处/公安部通报的真实案例话术）、增强语料 2,539 条、盲测验收卷 183 条，简繁粤英四语。已知边界与完整模型卡见主仓库。
+训练数据全部自建可审计：手写话术模板 421 个（含 ADCC/警务处/公安部通报的真实案例话术）、增强语料 3,383 条、盲测验收卷 240 条，简繁粤英四语。v5 经 32 轮进化门禁迭代晋升（错误台账→强化重训→门禁→版本晋升，不过即回滚）。已知边界与完整模型卡见主仓库。
 
 ## 常见问题
 
 **Q：换新版模型要改接入代码吗？**
-不用。权重 JSON 是稳定契约，把新的 `radar-v4.json` / `referee-v4.json` 换进资源目录即可，API 不变。
+不用。权重 JSON 是稳定契约（文件名与版本解耦），把新的 `radar.json` / `referee.json` 换进资源目录即可，API 不变。
 
 **Q：能自定义风险阈值吗？**
 可以。`probs` 给了全类分布，`pCal` 是连续值，档位（0.75/0.35）只是默认产品策略。

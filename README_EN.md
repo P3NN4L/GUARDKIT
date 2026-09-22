@@ -34,13 +34,13 @@ Design properties:
 npm install guard-kit
 ```
 ```ts
-import { mlBandLabel, replyStar, mlConversation } from 'guard-kit';
+import { mlScore, replyScore, mlConversation } from 'guard-kit';
 
-mlBandLabel('把验证码发我一下，不发给我就冻结账户');
-// → { band: 'high', label: '高危', typeLabel: '冒充身份' }
+mlScore('This is Officer Chan from Hong Kong Police. Your account is involved in money laundering. Transfer your savings to this safe account now or you will be arrested.');
+// → { band: 'high', topType: 'impersonation', pCal: 0.99 }
 
-replyStar('我不会转钱的，我要打110');
-// → { star: 3, label: '稳住反击', reliable: true }
+replyScore("I will not transfer any money. I'm calling 999 right now to report this.");
+// → { topClass: 'counter', star: 3, confCal: 0.91 }
 
 // Multi-turn context (v6): send the tail of the conversation; trigger='context' means the hit came from context
 mlConversation([
@@ -58,35 +58,35 @@ Xcode → File → Add Package Dependencies → Add Local… → select the main
 import GuardKit
 
 let radar = try Radar()
-let score = try radar.score("把存款转入安全账户配合调查")
-let percent = radar.mlPercent("可疑消息")  // Int 0-100
+let score = try radar.score("This is Officer Chan from Hong Kong Police. Your account is involved in money laundering. Transfer your savings to this safe account now.") // score.pCal = 0.99, score.band = "high"
+let percent = radar.mlPercent("Your parcel is held at customs. Pay a release fee of HK$216 now.")  // Int 0-100 → 88
 // score.pCal: Double, score.band: "high"/"medium"/"low", score.topType: String?
 
 let referee = try Referee()
-let rs = try referee.score("好的我马上转账")
-// rs.topClass: "agree", rs.star: 1, rs.confCal: Double
+let rs = try referee.score("OK, I will transfer the money right away.")
+// rs.topClass: "agree", rs.star: 1, rs.confCal: 0.72
 ```
 
 ### Android (Kotlin/Java)
 Put the main repo's `models/radar.json` and `models/referee.json` into `app/src/main/assets/`, and drop `GuardKit.kt` into your source tree (depends on `org.json:json`, bundled with Android):
 ```kotlin
 val radar = Radar(assets.open("radar.json").readBytes().decodeToString())
-val score = radar.score("把存款转入安全账户配合调查")
+val score = radar.score("This is Officer Chan from Hong Kong Police. Transfer your savings to this safe account now or you will be arrested.")
 ```
 
 ### Flutter / pure Dart
 Depend on the main repo's `dart/` in `pubspec.yaml` (path dependency or published package); NFKC is provided by `unorm_dart`:
 ```dart
 final radar = Radar(File('radar.json').readAsStringSync());
-final score = radar.score('把存款转入安全账户配合调查');
+final score = radar.score('This is Officer Chan from Hong Kong Police. Transfer your savings to this safe account now or you will be arrested.');
 ```
 
 ### WeChat / Alipay mini programs
 Copy the main repo's `miniprogram/` directory into a subpackage (both weights ~1.14MB, mind the 2MB main-package limit; radar-only ~852KB):
 ```js
 const guard = require('../../miniprogram/guard-kit.js');
-const r = guard.mlScore('可疑短信文本');   // { pCal, band, topType, ... }
-const s = guard.replyScore('我不会转钱的'); // { topClass, star, ... }
+const r = guard.mlScore('This is Officer Chan from Hong Kong Police. Transfer your savings to this safe account now.'); // { pCal: 0.99, band: 'high', topType: 'impersonation', ... }
+const s = guard.replyScore("I will not transfer any money. I'm calling 999 right now."); // { topClass: 'counter', star: 3, ... }
 ```
 
 ### Cloud HTTP (any client that can send a request)

@@ -48,6 +48,7 @@ import GuardKit
 
 let radar = try Radar()
 let score = try radar.score("把存款转入安全账户配合调查")
+let percent = radar.mlPercent("可疑消息")  // Int 0-100
 // score.pCal: Double, score.band: "high"/"medium"/"low", score.topType: String?
 
 let referee = try Referee()
@@ -95,6 +96,7 @@ GET  /health                    → {"status":"ok","radar":4,"referee":4}
 |---|---|---|
 | `pCal` | 校准后的诈骗概率 | 直接展示「AI 判定风险 87%」 |
 | `band` | `high` / `medium` / `low` | high=强预警可拦截；medium=软提醒；low=放行 |
+| **百分值** | **0-100 整数**（嵌入方对外呈现的统一口径） | `pCal × 100`；各平台均有 `mlPercent(text)` 便捷方法 |
 | `topType` | `impersonation` 冒充身份 / `pay_first` 先转账后兑现 / `bait` 兼职投资诱饵 | 展示「疑似冒充身份类骗局」 |
 | `probs` | 全类概率分布 | 需要自定义阈值时用 |
 

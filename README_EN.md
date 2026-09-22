@@ -144,10 +144,10 @@ GET  /health                              → {"status":"ok","radar":6.1,"refere
 |---|---|---|---|
 | Keyword rules | 1.8% | 0% | 55.0% |
 | **Radar v6.1 (on-device, 0.04ms)** | **92.7%** | **3.1%** | **95.0%** |
-| LLM zero-shot (cloud) | 74.5% | 13.8% | 80.8% |
-| LLM few-shot (cloud) | 54.5% | 4.6% | 76.7% |
-| MiniMax-M3 zero-shot (flagship) | 56.4% | 4.6% | 77.5% |
-| MiniMax-M3 few-shot (flagship) | 58.2% | 3.1% | 79.2% |
+| LLM zero-shot (cloud, per-call cost) | 74.5% | 13.8% | 80.8% |
+| LLM few-shot (cloud, per-call cost) | 54.5% | 4.6% | 76.7% |
+| MiniMax-M3 zero-shot (flagship, cloud per-call cost) | 56.4% | 4.6% | 77.5% |
+| MiniMax-M3 few-shot (flagship, cloud per-call cost) | 58.2% | 3.1% | 79.2% |
 
 > The public "fraud" slices include keyword-defined gray-zone promo texts, which LLMs reason their way to "advertising" (label-semantics divergence, disclosed as-is); **on the semantically unambiguous HK real cases, M3 few-shot hits 100%/0%** — large models fit as semantic backstops while the radar guards the high-volume first pass offline and free; fusion, not replacement.
 

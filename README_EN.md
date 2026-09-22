@@ -2,7 +2,7 @@
 
 English · [简体中文](README.md)
 
-🧠 **The engine at a glance**: [Mind map (中文)](docs/guard-kit-mindmap.html) · [Mind map (English)](docs/guard-kit-mindmap-en.html) — GitHub shows HTML as source; download and open locally for the rendered view (once this repo is public, the [online render · zh](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap.html) / [online render · en](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap-en.html) links open directly in the browser).
+🧠 **The engine at a glance**: [online render · zh](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap.html) · [online render · en](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap-en.html) — click to view ([source · zh](docs/guard-kit-mindmap.html) / [source · en](docs/guard-kit-mindmap-en.html)).
 
 📊 **HK-ScamBench v1**: our published zero-shot benchmark of real Hong Kong scam case families (12 families + 8 institutional notices, source-tagged, with baselines and citation) — [English](benchmark/HK-ScamBench_EN.md) · [中文](benchmark/HK-ScamBench.md)
 

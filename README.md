@@ -2,7 +2,7 @@
 
 [English](README_EN.md) · 简体中文
 
-🧠 **一图看懂引擎**：[中文脑图](docs/guard-kit-mindmap.html) · [英文脑图](docs/guard-kit-mindmap-en.html)（GitHub 页内显示源码，下载后双击即为渲染图；仓库公开后可用 [在线渲染·中](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap.html) / [在线渲染·英](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap-en.html) 直接查看）
+🧠 **一图看懂引擎**：[在线渲染·中文脑图](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap.html) · [在线渲染·英文脑图](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap-en.html)（点开即看；[源文件·中](docs/guard-kit-mindmap.html) / [源文件·英](docs/guard-kit-mindmap-en.html)）
 
 📊 **HK-ScamBench v1**：我们发布的香港真实骗案零样本评测基准（12 案例家族 + 8 机构通知，出处逐条标注，含基线结果与引用格式）——[中文](benchmark/HK-ScamBench.md) · [English](benchmark/HK-ScamBench_EN.md)
 

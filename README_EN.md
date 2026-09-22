@@ -6,7 +6,7 @@ English · [简体中文](README.md)
 
 📊 **HK-ScamBench v1**: our published zero-shot benchmark of real Hong Kong scam case families (12 families + 8 institutional notices, source-tagged, with baselines and citation) — [English](benchmark/HK-ScamBench_EN.md) · [中文](benchmark/HK-ScamBench.md)
 
-**On-device anti-scam scoring engine (Radar v6.2 · Referee v5)** — two self-trained compact models (Radar + Referee) that **embed seamlessly into any app**: native iOS/Android, RN/Expo, Flutter, mini programs, web and cloud. Pure functions + built-in weights: zero dependencies, fully offline, <0.1 ms per inference, bit-identical scores across six platforms. This repo hosts integration docs only; **the engine source, model weights and training pipeline live in the main repo** (link at the bottom).
+**On-device anti-scam scoring engine (Radar v6.1 · Referee v5)** — two self-trained compact models (Radar + Referee) that **embed seamlessly into any app**: native iOS/Android, RN/Expo, Flutter, mini programs, web and cloud. Pure functions + built-in weights: zero dependencies, fully offline, <0.1 ms per inference, bit-identical scores across six platforms. This repo hosts integration docs only; **the engine source, model weights and training pipeline live in the main repo** (link at the bottom).
 
 ## Two integration tiers
 
@@ -26,7 +26,7 @@ Referee version updates may pause (radar evolves independently); radar-only host
 
 Design properties:
 - **Zero hallucination**: outputs probabilities and enum verdicts only; never generates text
-- **Offline**: weights embedded (Radar v6.2 852KB + Referee v5 285KB); no network calls, no privacy leakage
+- **Offline**: weights embedded (Radar v6.1 852KB + Referee v5 285KB); no network calls, no privacy leakage
 - **Cross-platform consistency**: the same sentence scores bit-identically on all six platforms (≤1e-6, golden-vector acceptance)
 - **Calibrated**: when it says 90% it means ~90% confidence (Platt calibration) — not a black-box confidence score
 - **Multi-turn context (v6)**: a grooming opener ("this is my new number") alone doesn't fire; the moment intent appears ("please send HK$8,000") it triggers "with context"
@@ -126,7 +126,7 @@ GET  /health                              → {"status":"ok","radar":6.1,"refere
 | `star` | counter=3 / stall=2 / agree=1 / meaningless=1; null when no keyword hit |
 | `confCal` | Calibrated confidence; **when <0.5, show a neutral result without stars** |
 
-## Quality metrics (Radar v6.2)
+## Quality metrics (Radar v6.1)
 
 **Real-world external benchmark** (public real SMS the model never saw, held-out):
 
@@ -143,7 +143,7 @@ GET  /health                              → {"status":"ok","radar":6.1,"refere
 | Approach | Recall | FPR | Accuracy |
 |---|---|---|---|
 | Keyword rules | 1.8% | 0% | 55.0% |
-| **Radar v6.2 (on-device, 0.04ms)** | **92.7%** | **3.1%** | **95.0%** |
+| **Radar v6.1 (on-device, 0.04ms)** | **92.7%** | **3.1%** | **95.0%** |
 | LLM zero-shot (cloud, per-call cost) | 74.5% | 13.8% | 80.8% |
 | LLM few-shot (cloud, per-call cost) | 54.5% | 4.6% | 76.7% |
 | MiniMax-M3 zero-shot (flagship, cloud per-call cost) | 56.4% | 4.6% | 77.5% |
@@ -151,10 +151,10 @@ GET  /health                              → {"status":"ok","radar":6.1,"refere
 
 > The public "fraud" slices include keyword-defined gray-zone promo texts, which LLMs reason their way to "advertising" (label-semantics divergence, disclosed as-is); **on the semantically unambiguous HK real cases, M3 few-shot hits 100%/0%** — large models fit as semantic backstops while the radar guards the high-volume first pass offline and free; fusion, not replacement.
 
-**Real Hong Kong case set (zero-shot)**: 12 real HK scam case families (reconstructed case-by-case from ADCC / police / news, source-tagged) + 8 real institutional notices — Radar v6.2 scores **100% recall (all high band)** at 12.5% FPR; keyword rules get **0%** recall; the LLM few-shot also reaches 100% but needs seconds of cloud round-trips.
+**Real Hong Kong case set (zero-shot)**: 12 real HK scam case families (reconstructed case-by-case from ADCC / police / news, source-tagged) + 8 real institutional notices — Radar v6.1 scores **100% recall (all high band)** at 12.5% FPR; keyword rules get **0%** recall; the LLM few-shot also reaches 100% but needs seconds of cloud round-trips.
 > LLM comparison config: MiniMax `abab6.5s-chat` (`chatcompletion_v2`) · temperature 0.1 · max_tokens 40 · 4 labeled examples embedded in the system prompt · strict JSON output; **flagship `MiniMax-M3`** (reasoning model): default temperature · max_tokens 1500 (room for its reasoning), zero-shot uses the same no-example task description and few-shot the same 4 examples, verdict read from the JSON in the answer (falling back to the final reasoning conclusion) — the two M3 rows above are exactly these two modes. Full few-shot/zero-shot/distillation parameters in the main repo README ("LLM configuration").
 
-| Internal | Radar v6.2 | Referee v5 |
+| Internal | Radar v6.1 | Referee v5 |
 |---|---|---|
 | Test-set recall / accuracy | 94.9% (high band 91.5%) | 95.8% |
 | Latest honest blind set | recall 92.9% / high-band 0 FPR | accuracy 100% |

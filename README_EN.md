@@ -141,6 +141,9 @@ GET  /health                              → {"status":"ok","radar":6,"referee"
 | Keyword rules | 1.8% | 0% | 55.0% |
 | **Radar v6 (on-device, 0.04ms)** | **92.7%** | **3.1%** | **95.0%** |
 | LLM zero-shot (cloud) | 74.5% | 13.8% | 80.8% |
+| LLM few-shot (cloud) | 54.5% | 4.6% | 76.7% |
+
+**Real Hong Kong case set (zero-shot)**: 12 real HK scam case families (reconstructed case-by-case from ADCC / police / news, source-tagged) + 8 real institutional notices — Radar v6 scores **100% recall (all high band)** at 12.5% FPR; keyword rules get **0%** recall; the LLM few-shot also reaches 100% but needs seconds of cloud round-trips.
 
 | Internal | Radar v6 | Referee v5 |
 |---|---|---|

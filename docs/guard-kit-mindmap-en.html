@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>guard-kit · Anti-Scam Engine Mind Map (Radar v6.1)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "SF Pro Text", "Helvetica Neue", "PingFang HK", "Noto Sans CJK HK", sans-serif; background: #F4F7F9; overflow: auto; }
+  #wrap { position: relative; width: 2200px; height: 2140px; margin: 20px auto; }
+  svg.links { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .node { position: absolute; border-radius: 10px; padding: 8px 14px; font-size: 14px; line-height: 1.45; box-shadow: 0 1px 4px rgba(20,40,60,.12); }
+  .center { background: #16323F; color: #fff; font-size: 21px; font-weight: 700; padding: 16px 22px; border-radius: 14px; text-align: center; box-shadow: 0 4px 14px rgba(22,50,63,.35); }
+  .center small { display: block; font-size: 12px; font-weight: 400; opacity: .85; margin-top: 4px; }
+  .branch { color: #fff; font-weight: 700; font-size: 16px; padding: 10px 16px; }
+  .leaf { background: #fff; color: #233; border-left: 4px solid #999; max-width: 356px; }
+  .leaf b { color: #10404F; }
+  .leaf code { background: #EDF3F6; border-radius: 4px; padding: 0 5px; font-size: 12.5px; font-family: "SF Mono", Menlo, monospace; }
+  .sub { background: #EDF3F6; color: #345; border: 1px solid #D5E2E9; max-width: 330px; font-size: 13px; }
+  .b1 { background: #2C6E8F; } .b2 { background: #8F5A2C; } .b3 { background: #4A7B96; }
+  .b4 { background: #34756B; } .b5 { background: #7A5C8F; } .b6 { background: #45622E; } .b7 { background: #8F2C4E; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <svg class="links" id="links"></svg>
+  <div id="nodes"></div>
+</div>
+<script>
+const DATA = [
+ { side: 'R', cls: 'b1', title: 'Dual models (on-device weights)<br><small style="font-weight:400">Radar 852KB · Referee 285KB</small>', x: 1150, y: 40, leaves: [
+   { t: '<b>Radar v6.1 · message risk</b>', kids: ['Output: calibrated probability + raw evidence score + three bands (high/suspicious/pass) + scam category + a 0-100 integer percent', 'Dual-condition bands: calibrated confidence AND raw evidence must both pass (high 0.75×0.505 / suspicious 0.35×0.455 — immune to calibration gray-zone inflation)'] },
+   { t: '<b>Multi-turn context scoring</b>', kids: ['Takes the larger of the current message alone vs. the last 4 concatenated; the hit source is labeled (direct / with-context)', 'A grooming opener alone never fires; the moment intent appears it triggers "with context"; sticky escalation is host-side session state'] },
+   { t: '<b>Referee v5 · reply quality</b>', kids: ['Four intents (counter / stall / comply / meaningless) + star rating + calibrated confidence', 'Below confidence 0.5 the UI should show a neutral result without stars'] },
+ ]},
+ { side: 'R', cls: 'b2', title: 'LLM configuration (MiniMax)<br><small style="font-weight:400">few-shot baselines · distillation</small>', x: 1150, y: 790, leaves: [
+   { t: '<b>Comparison baselines</b>', kids: ['MiniMax chat platform · models abab6.5s-chat (economy) and MiniMax-M3 (flagship reasoning)', 'temperature 0.1 · output budget per use case · strict JSON verdict output (scam / not_scam + confidence)', '4 labeled HK-style examples embedded in the prompt (2 scam + 2 normal)', 'M3 is a reasoning model: output budget 1500, verdict read from the answer (falling back to the reasoning conclusion); serial calls with backoff under rate limits', 'Results (120 real SMS, recall/FPR): Radar 92.7/3.1 ≫ abab zero-shot 74.5/13.8 ≫ abab few-shot 54.5/4.6 ≫ M3 56.4/4.6 & 58.2/3.1 ≫ keywords 1.8/0', 'HK real cases: M3 few-shot 100%/0% — perfect but seconds of reasoning + online + per-call cost; radar 100% at 0.04ms offline (fusion division of labor)'] },
+   { t: '<b>Distillation pipeline (corpus)</b>', kids: ['temperature 1.0 · max_tokens 3000 · 24 items per call as JSON array · 6 rounds driven by the FP profile', 'Filters: length 8-340 · normalized dedup · advice-word removal on scam side · raw responses archived for audit'] },
+   { t: '<b>Security boundary</b>', kids: ['Key injected only via env var (zero credentials in source); HTTP sent by the operator via curl — zero network code in repo'] },
+ ]},
+ { side: 'R', cls: 'b3', title: 'Six-platform integration<br><small style="font-weight:400">same weights, bit-identical ≤1e-6</small>', x: 1150, y: 1500, leaves: [
+   { t: '<b>TS / React Native · Expo</b>', kids: ['Bundle both models, or radar-only (referee weights stay out, saves 285KB) · one-call percent helper'] },
+   { t: '<b>Native trio</b>', kids: ['iOS: native component package (radar / referee / percent / multi-turn)', 'Android: weights in app assets + a single-file component, zero third-party dependencies', 'Flutter: package dependency (Unicode normalization built in)'] },
+   { t: '<b>Mini program · cloud</b>', kids: ['WeChat mini program: weights inside a subpackage', 'Four cloud endpoints: message scoring / reply scoring / conversation context / health check'] },
+ ]},
+ { side: 'L', cls: 'b4', title: 'Inference core<br><small style="font-weight:400">pure functions · zero deps · 0.04ms</small>', x: 430, y: 40, leaves: [
+   { t: '<b>Features</b>', kids: ['char 1-3 gram TF-IDF (codepoint-safe, emoji-safe) · 12,000 features · four-language quota (EN≥25%)'] },
+   { t: '<b>Model</b>', kids: ['softmax logistic regression (4 classes: normal + impersonation / pay-first / bait) + sublinear tf + L2'] },
+   { t: '<b>Calibration</b>', kids: ['Platt on grouped stratified OOF · temperature cap a≤6 (anti gray-zone inflation) · ECE reported honestly'] },
+   { t: '<b>Deterministic rule layer</b>', kids: ['Anti-fraud-discussion whitelist v2 (topic word + advice word, dual condition)', 'Official-domain rule: gov.hk / post / bank domains with no suspicious URL token (.top //icu/ …) → pass — scammers must carry fake domains, structurally exclusive', 'Rules mirrored verbatim across all 10 engine implementations · 0 false-pass validated on 20k+ scam rows'] },
+ ]},
+ { side: 'L', cls: 'b5', title: 'Training & evolution<br><small style="font-weight:400">never ship a sick model</small>', x: 430, y: 850, leaves: [
+   { t: '<b>Three-source corpus · 12,832 rows</b>', kids: ['247 hand-written templates (ADCC / HK Police / MPS real cases)', '1,416 LLM-distilled (652 scam / 764 normal, six rounds)', '9,274 public real-world (UCI 5,574 English + 800k Chinese stratified) + 2,142 augmented'] },
+   { t: '<b>Training essentials</b>', kids: ['sqrt language balancing (prevents single-language flips) · StratifiedGroupKFold OOF · EN-quota pruning'] },
+   { t: '<b>Honesty protocol</b>', kids: ['Blind sets v1→v8-hk written BEFORE any training · retired into training ×2 · full error ledger', 'Gate: no regression / FP bars / honest-set floor — any failure auto-rolls back all artifacts'] },
+ ]},
+ { side: 'L', cls: 'b6', title: 'Benchmarks & metrics<br><small style="font-weight:400">all held-out, reproducible</small>', x: 430, y: 1490, leaves: [
+   { t: '<b>Public real SMS (5 slices)</b>', kids: ['Chinese fraud recall 90.2% (v5: 52.2) · high band 84.9%', 'Real-normal FPR 0.2-7.1% (v5: 10.6-25.1)'] },
+   { t: '<b>HK real case set</b>', kids: ['12 families (ADCC / ITHB / SCMP / police, source-tagged) — zero-shot 12/12 all high band (calibrated score ≥ 0.9)'] },
+   { t: '<b>Multi-way comparison (120 items)</b>', kids: ['Radar 92.7/3.1 ≫ abab zs 74.5/13.8 ≫ abab fs 54.5/4.6 ≫ M3 56.4 & 58.2 ≫ keywords 1.8/0', 'HK set: radar 100% ties M3 few-shot 100%/0% — but 0.04ms offline vs seconds online'] },
+ ]},
+ { side: 'L', cls: 'b7', title: 'Delivery', x: 430, y: 1880, leaves: [
+   { t: '<b>Repo layering</b>', kids: ['Main repo (engine + full training pipeline) · competition repo (runtime-only subset) · GUARDKIT integration guide (zh/en)'] },
+   { t: '<b>Contract</b>', kids: ['Weight files swap-in-place (filenames decoupled from versions, zero code changes) · MIT · bilingual docs'] },
+ ]},
+];
+const COLORS = { b1: '#2C6E8F', b2: '#8F5A2C', b3: '#4A7B96', b4: '#34756B', b5: '#7A5C8F', b6: '#45622E', b7: '#8F2C4E' };
+const wrap = document.getElementById('wrap');
+const nodesEl = document.getElementById('nodes');
+const svg = document.getElementById('links');
+const EDGE = [];
+function addNode(html, cls, x, y, w) {
+  const el = document.createElement('div');
+  el.className = 'node ' + cls;
+  el.innerHTML = html;
+  if (w) el.style.width = w + 'px';
+  el.style.left = x + 'px'; el.style.top = y + 'px';
+  nodesEl.appendChild(el);
+  requestAnimationFrame(draw);
+  return el;
+}
+function edge(x1, y1, x2, y2, color) { EDGE.push({ x1, y1, x2, y2, color }); }
+function draw() {
+  svg.innerHTML = EDGE.map(e => {
+    const mx = (e.x1 + e.x2) / 2;
+    return `<path d="M${e.x1},${e.y1} C${mx},${e.y1} ${mx},${e.y2} ${e.x2},${e.y2}" fill="none" stroke="${e.color}" stroke-width="1.8" opacity=".55"/>`;
+  }).join('');
+}
+const cx = 1090, cy = 1050;
+addNode('guard-kit · Anti-Scam Scoring Engine<small>Radar v6.1 · Referee v5 · six platforms · offline 0.04ms · zero hallucination</small>', 'center', cx - 150, cy - 34, 300);
+DATA.forEach(br => {
+  const bw = 310;
+  const color = COLORS[br.cls];
+  const b = addNode(br.title, 'node branch ' + br.cls, br.x, br.y, bw);
+  edge(cx + (br.side === 'R' ? 150 : -150), cy, br.x + (br.side === 'R' ? 0 : bw), br.y + 26, color);
+  let ly = br.y + 66;
+  (br.leaves || []).forEach(leaf => {
+    const l = addNode(leaf.t, 'leaf ' + br.cls, br.x + 6, ly, br.side === 'R' ? 336 : 350);
+    edge(br.x + (br.side === 'R' ? 0 : bw), br.y + 26, br.x + 6 + (br.side === 'R' ? 0 : 344), ly + 16, color);
+    ly += l.offsetHeight + 8;
+    (leaf.kids || []).forEach(k => {
+      const kx = br.side === 'R' ? br.x + 366 : br.x - 318;
+      const s = addNode(k, 'sub', kx, ly, 308);
+      edge(br.x + (br.side === 'R' ? 342 : -6), ly - 8, kx + (br.side === 'R' ? 0 : 308), ly + 14, color);
+      ly += s.offsetHeight + 6;
+    });
+    ly += 6;
+  });
+});
+</script>
+</body>
+</html>

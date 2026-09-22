@@ -98,7 +98,7 @@ npx wrangler deploy   # in the main repo's api/ directory
 POST /score        {"text": "..."}         → Radar result JSON
 POST /reply        {"text": "..."}         → Referee result JSON
 POST /conversation {"messages": ["..."]}   → Radar multi-turn context JSON
-GET  /health                              → {"status":"ok","radar":6,"referee":5}
+GET  /health                              → {"status":"ok","radar":6.1,"referee":5}
 ```
 ⚠️ Cloud is only for environments that cannot run the models locally; on-device integration keeps the offline & privacy advantages.
 
@@ -144,6 +144,7 @@ GET  /health                              → {"status":"ok","radar":6,"referee"
 | LLM few-shot (cloud) | 54.5% | 4.6% | 76.7% |
 
 **Real Hong Kong case set (zero-shot)**: 12 real HK scam case families (reconstructed case-by-case from ADCC / police / news, source-tagged) + 8 real institutional notices — Radar v6.1 scores **100% recall (all high band)** at 12.5% FPR; keyword rules get **0%** recall; the LLM few-shot also reaches 100% but needs seconds of cloud round-trips.
+> LLM comparison config: MiniMax `abab6.5s-chat` (`chatcompletion_v2`) · temperature 0.1 · max_tokens 40 · 4 labeled examples embedded in the system prompt · strict JSON output; full few-shot/zero-shot/distillation parameters in the main repo README ("LLM configuration").
 
 | Internal | Radar v6.1 | Referee v5 |
 |---|---|---|

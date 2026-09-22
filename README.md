@@ -98,7 +98,7 @@ npx wrangler deploy   # 在主仓库 api/ 目录
 POST /score        {"text": "..."}         → 雷达结果 JSON
 POST /reply        {"text": "..."}         → 裁判结果 JSON
 POST /conversation {"messages": ["..."]}   → 雷达多轮语境 JSON（trigger 标注来源）
-GET  /health                              → {"status":"ok","radar":6,"referee":5}
+GET  /health                              → {"status":"ok","radar":6.1,"referee":5}
 ```
 ⚠️ 云端仅用于无法本地跑模型的环境；端内集成才保有离线与隐私优势。
 
@@ -144,6 +144,7 @@ GET  /health                              → {"status":"ok","radar":6,"referee"
 | 大模型 few-shot（云端） | 54.5% | 4.6% | 76.7% |
 
 **真实香港案例卷（零样本）**：12 个真实 HK 骗案家族（ADCC/警方/新闻逐案重构并标注出处）+ 8 条真实机构通知——雷达 v6.1 **召回 100%（全部高危档）**、误报 12.5%；关键词规则召回 **0%**；大模型 few-shot 同为 100% 但需秒级联网。
+> LLM 对照配置：MiniMax `abab6.5s-chat`（`chatcompletion_v2`）· temperature 0.1 · max_tokens 40 · system 内嵌 4 个标注例 · 严格 JSON 输出；few-shot/zero-shot/蒸馏全参数见主仓库 README「LLM 配置」。
 
 | 内部指标 | 雷达 v6.1 | 裁判 v5 |
 |---|---|---|

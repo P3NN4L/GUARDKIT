@@ -150,7 +150,7 @@ GET  /health                              → {"status":"ok","radar":6.1,"refere
 > The public "fraud" slices include keyword-defined gray-zone promo texts, which LLMs reason their way to "advertising" (label-semantics divergence, disclosed as-is); **on the semantically unambiguous HK real cases, M3 few-shot hits 100%/0%** — large models fit as semantic backstops while the radar guards the high-volume first pass offline and free; fusion, not replacement.
 
 **Real Hong Kong case set (zero-shot)**: 12 real HK scam case families (reconstructed case-by-case from ADCC / police / news, source-tagged) + 8 real institutional notices — Radar v6.1 scores **100% recall (all high band)** at 12.5% FPR; keyword rules get **0%** recall; the LLM few-shot also reaches 100% but needs seconds of cloud round-trips.
-> LLM comparison config: MiniMax `abab6.5s-chat` (`chatcompletion_v2`) · temperature 0.1 · max_tokens 40 · 4 labeled examples embedded in the system prompt · strict JSON output; full few-shot/zero-shot/distillation parameters in the main repo README ("LLM configuration").
+> LLM comparison config: MiniMax `abab6.5s-chat` (`chatcompletion_v2`) · temperature 0.1 · max_tokens 40 · 4 labeled examples embedded in the system prompt · strict JSON output; **flagship `MiniMax-M3`** (reasoning model): default temperature · max_tokens 1500 (room for its reasoning), zero-shot uses the same no-example task description and few-shot the same 4 examples, verdict read from the JSON in the answer (falling back to the final reasoning conclusion) — the two M3 rows above are exactly these two modes. Full few-shot/zero-shot/distillation parameters in the main repo README ("LLM configuration").
 
 | Internal | Radar v6.1 | Referee v5 |
 |---|---|---|

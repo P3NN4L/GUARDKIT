@@ -150,7 +150,7 @@ GET  /health                              → {"status":"ok","radar":6.1,"refere
 > 公开集「诈骗类」切片含关键词定义的灰区促销文本，大模型推理后倾向判「广告」（标签语义分歧，如实披露）；**语义无歧义的 HK 真实案例上 M3 few-shot 达 100%/0%**——大模型适合做语义兜底，雷达 0.04ms 离线免费守住海量第一道筛查，两者是融合分工而非替代关系。
 
 **真实香港案例卷（零样本）**：12 个真实 HK 骗案家族（ADCC/警方/新闻逐案重构并标注出处）+ 8 条真实机构通知——雷达 v6.1 **召回 100%（全部高危档）**、误报 12.5%；关键词规则召回 **0%**；大模型 few-shot 同为 100% 但需秒级联网。
-> LLM 对照配置：MiniMax `abab6.5s-chat`（`chatcompletion_v2`）· temperature 0.1 · max_tokens 40 · system 内嵌 4 个标注例 · 严格 JSON 输出；few-shot/zero-shot/蒸馏全参数见主仓库 README「LLM 配置」。
+> LLM 对照配置：MiniMax `abab6.5s-chat`（`chatcompletion_v2`）· temperature 0.1 · max_tokens 40 · system 内嵌 4 个标注例 · 严格 JSON 输出；**旗舰 `MiniMax-M3`**（推理模型）：默认 temperature · max_tokens 1500（容纳思考），zero-shot 用同一无例子任务描述、few-shot 用同一组 4 例，判定取正文 JSON（空则取推理尾结论）——上表两行 M3 即此两种模式。few-shot/zero-shot/蒸馏全参数见主仓库 README「LLM 配置」。
 
 | 内部指标 | 雷达 v6.1 | 裁判 v5 |
 |---|---|---|

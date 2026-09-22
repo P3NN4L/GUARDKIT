@@ -2,6 +2,8 @@
 
 [English](README_EN.md) · 简体中文
 
+🧠 **一图看懂引擎**：[中文脑图](docs/guard-kit-mindmap.html) · [英文脑图](docs/guard-kit-mindmap-en.html)（GitHub 页内显示源码，下载后双击即为渲染图；仓库公开后可用 [在线渲染·中](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap.html) / [在线渲染·英](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap-en.html) 直接查看）
+
 **端内反诈打分引擎（雷达 v6.1 · 裁判 v5）**——两个自训小模型（雷达 + 裁判），**可实现无缝嵌入各类 App**：原生 iOS/Android、RN/Expo、Flutter、小程序、网页与云端。纯函数 + 内置权重，零依赖、完全离线、单条推理 <0.1ms，同一份权重六个平台分数逐位一致。本仓库只放接入文档；**引擎源码、模型权重与训练管线在主仓库**（见文末链接）。
 
 ## 两种接入层面

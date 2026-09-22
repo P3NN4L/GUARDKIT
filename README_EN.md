@@ -2,6 +2,8 @@
 
 English · [简体中文](README.md)
 
+🧠 **The engine at a glance**: [Mind map (中文)](docs/guard-kit-mindmap.html) · [Mind map (English)](docs/guard-kit-mindmap-en.html) — GitHub shows HTML as source; download and open locally for the rendered view (once this repo is public, the [online render · zh](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap.html) / [online render · en](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap-en.html) links open directly in the browser).
+
 **On-device anti-scam scoring engine (Radar v6.1 · Referee v5)** — two self-trained compact models (Radar + Referee) that **embed seamlessly into any app**: native iOS/Android, RN/Expo, Flutter, mini programs, web and cloud. Pure functions + built-in weights: zero dependencies, fully offline, <0.1 ms per inference, bit-identical scores across six platforms. This repo hosts integration docs only; **the engine source, model weights and training pipeline live in the main repo** (link at the bottom).
 
 ## Two integration tiers

@@ -1,0 +1,13 @@
+Copyright (c) 2026 SettlePal / guard-kit team, Hong Kong Baptist University.
+All Rights Reserved.
+
+本仓库内容（接入文档、架构脑图）为专有财产，保留一切权利。
+未获版权方书面授权，不得复制、修改、再分发或用于商业用途。
+
+引擎的源代码、模型权重与训练产物以私有通道按书面授权分发，
+其许可条款见引擎随附的 LICENSE.txt。
+
+例外：HK-ScamBench 评测数据集（benchmark/HK-ScamBench-v1.jsonl）
+单独以 CC BY 4.0 发布，引用格式见 benchmark/HK-ScamBench.md。
+
+联系方式：通过团队渠道获取书面授权。

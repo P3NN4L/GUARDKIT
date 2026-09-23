@@ -135,6 +135,20 @@ GET  /health                              → {"status":"ok","radar":7,"referee"
 | `star` | counter=3 / stall=2 / agree=1 / meaningless=1; null when no keyword hit |
 | `confCal` | Calibrated confidence; **when <0.5, show a neutral result without stars** |
 
+## Generation comparison (v6 → v6.2 → v7, same sets, all measured)
+
+| Eval set (fresh, blind-written before training) | v6 (first) | v6.2 | **v7** |
+|---|---|---|---|
+| blind-v9 multi-turn: recall / high-FPR | 87.5% / 27.3% | 93.8% / 45.5% | **100% / 0%** |
+| blind-v10: recall / high-FPR | 85.7% / 42.9% | 85.7% / 42.9% | 85.7% / **28.6%** |
+| blind-v11 new surfaces: recall / high-FPR | 76.9% / 8.3% | 76.9% / 33.3% | 76.9% / **8.3%** |
+| HK-ScamBench high-FPR | 12.5% | **0%** | **0%** |
+| Ultra-short probes (zh/en) | 0/2 | 2/2 | 2/2 |
+| Public 120: recall / FPR / accuracy | 92.7 / 3.1 / 95.0 | 87.3 / 4.6 / 91.7 | **89.1 / 1.5 / 94.2** |
+| Referee (same fresh sets: v9 / v10) | — (v5: 65% / 41%) | — | **90% / 65%** |
+
+Reading: each generation converges one frontier — v6 landed real-world corpora, v6.2 closed ultra-short variants and institutional FPs, v7 closed the multi-turn blind spot and pushed public-set FPR to 1.5%; single-set oscillations converge in the next generation. All numbers reproducible.
+
 ## Quality metrics (Radar v7)
 
 **Real-world external benchmark** (public real SMS the model never saw, held-out):
@@ -171,6 +185,15 @@ GET  /health                              → {"status":"ok","radar":7,"referee"
 
 Training data, three auditable sources: 247 handwritten script templates (incl. real cases from ADCC / HK Police / MPS advisories) + **1,392 LLM-distilled items** (MiniMax, five rounds targeted at the FP profile, covering Cantonese/HK scenarios) + **9,274 public real-world training items** (UCI real English SMS + stratified slices of 800k real Chinese SMS), plus 2,142 programmatic augmentations, four languages (SC/TC/Cantonese/English). v6 was promoted after five rounds of "mix-train → dual benchmark → FP-profile-targeted distillation", with the error ledger maintained throughout. Known boundaries and the full model card live in the main repo.
 
+### Who can see what (private distribution boundaries)
+
+| Identity | Can see |
+|---|---|
+| Public visitor (no token) | This repo only (docs / mind maps / HK-ScamBench); no source, no weights |
+| Holder of a `read:packages` token | Can download installable packages (compiled artifacts + weights) only; **cannot see any repository contents** |
+| Engine repo collaborator | Full engine repo contents (training pipeline / corpus) — ⚠️ collaborators on personal repos get write access by default; core team only |
+| Fine-grained token (single repo, Contents:read) | Can resolve the SPM private repo URL (iOS scenario); still no corpus or ledger access |
+
 ## FAQ
 
 **Q: Do I need code changes to swap in a new model version?**
@@ -186,7 +209,7 @@ Real-world high-band FPR is 0.2-5.8% (v5: 10.6-25.1%). If one still appears in p
 Pass the recent messages in time order to `mlConversation(messages)` (same API on six platforms). A grooming opener alone won't fire; the moment a follow-up reveals scam intent it triggers, and when `trigger='context'` the UI should label it "judged with context".
 
 **Q: Commercial licensing?**
-Code and model weights are **All Rights Reserved** — this repository publishes integration docs only; the engine is distributed through a private channel (invitation + GitHub Packages private registry / Release attachments) under written grant. The HK-ScamBench dataset is separately released under CC BY 4.0. Weights are self-trained and owned; no third-party model dependencies.
+Code and model weights are **All Rights Reserved** (see [LICENSE.txt](LICENSE.txt)) — this repository publishes integration docs only; the engine is distributed through a private channel (invitation + GitHub Packages private registry / Release attachments) under written grant. The HK-ScamBench dataset is separately released under CC BY 4.0. Weights are self-trained and owned; no third-party model dependencies.
 
 ---
 

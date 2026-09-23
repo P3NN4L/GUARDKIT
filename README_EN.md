@@ -2,225 +2,321 @@
 
 English · [简体中文](README.md)
 
-🧠 **The engine at a glance**: [online render · zh](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap.html) · [online render · en](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap-en.html) — click to view ([source · zh](docs/guard-kit-mindmap.html) / [source · en](docs/guard-kit-mindmap-en.html)).
+**On-device anti-scam scoring engine (Radar v7 · Referee v6)** — two self-trained compact models that **embed seamlessly into any app**: native iOS/Android, RN/Expo, Flutter, mini programs, web and cloud. Pure functions + built-in weights: zero dependencies, fully offline, <0.1 ms per inference, bit-identical scores across all six platforms (≤1e-6).
 
-📊 **HK-ScamBench v1**: our published zero-shot benchmark of real Hong Kong scam case families (12 families + 8 institutional notices, source-tagged, with baselines and citation) — [English](benchmark/HK-ScamBench_EN.md) · [中文](benchmark/HK-ScamBench.md)
+> This repo (public) hosts integration docs and the public benchmark only; **engine source, weights and training pipeline are distributed from a private repo** (invitation-based, see [Private distribution](#private-distribution-six-channels)).
+> 🧠 At a glance: [online mind map · zh](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap.html) · [online mind map · en](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap-en.html) ([source · zh](docs/guard-kit-mindmap.html) / [source · en](docs/guard-kit-mindmap-en.html))
+> 📊 Our published benchmark **[HK-ScamBench](benchmark/HK-ScamBench_EN.md)**: 12 real Hong Kong scam case families + 8 institutional notices, source-tagged — re-run it with your own system and cite freely.
 
-**On-device anti-scam scoring engine (Radar v7 · Referee v6)** — two self-trained compact models (Radar + Referee) that **embed seamlessly into any app**: native iOS/Android, RN/Expo, Flutter, mini programs, web and cloud. Pure functions + built-in weights: zero dependencies, fully offline, <0.1 ms per inference, bit-identical scores across six platforms. This repo hosts integration docs only; **the engine source, model weights and training pipeline live in the main repo** (link at the bottom).
+---
 
-## Two integration tiers
-
-| Tier | Target hosts | Bundle |
-|---|---|---|
-| **Both models** (default) | Apps needing message risk scoring + drill/reply scoring (education, training apps) | Radar + Referee (~1.14MB) |
-| **Radar-only** | Apps needing message risk detection / content moderation only (banking, community, chat) | Radar weights only (~852KB; referee stays out) |
-
-Referee version updates may pause (radar evolves independently); radar-only hosts are unaffected. On TS, the subpath import `import { mlScore } from 'guard-kit/radar'` resolves only the radar module graph; on native, ship only the `radar.json` resource accordingly.
-
-## What it does
+## Capability overview
 
 | Model | Input | Output | Typical use |
 |---|---|---|---|
-| **Radar** | Any message text (or a multi-turn message array) | Calibrated scam probability (0–1) + three-band verdict (high/suspicious/pass) + scam category; in conversation mode `trigger` labels the hit source | Chat risk warnings, pasted-content checks, content moderation |
-| **Referee** | The user's reply | Four intents (counter/stall/agree/meaningless) + star rating + calibrated confidence | Anti-scam drill scoring, interactive feedback in education apps |
+| **Radar** | A single message **or a multi-turn message sequence** | Calibrated probability + three bands (high/suspicious/pass) + scam category + percent (0-100) | Chat risk control, paste checks, content moderation |
+| **Referee** | One user reply | Four intents (counter/stall/comply/meaningless) + star rating + calibrated confidence | Anti-scam drill scoring, education apps |
 
-Design properties:
-- **Zero hallucination**: outputs probabilities and enum verdicts only; never generates text
-- **Offline**: weights embedded (Radar v7 852KB + Referee v6 285KB); no network calls, no privacy leakage
-- **Cross-platform consistency**: the same sentence scores bit-identically on all six platforms (≤1e-6, golden-vector acceptance)
-- **Calibrated**: when it says 90% it means ~90% confidence (Platt calibration) — not a black-box confidence score
-- **Multi-turn context (v6)**: a grooming opener ("this is my new number") alone doesn't fire; the moment intent appears ("please send HK$8,000") it triggers "with context"
+Design properties: **zero hallucination** (outputs probabilities and enums only, never text) · **offline** (weights built in; no network, no privacy leakage) · **calibrated** (90% means ~90%) · **multi-turn context** (grooming openers don't fire; intent triggers immediately) · **deterministic rule layer** (anti-fraud-discussion whitelist + official-domain rule, bit-identical on every platform).
 
-## Six-platform quick start
+**Quality at a glance (v7)**: zero-shot **100% recall / 0% high-band FPR** on the real HK case set; **89.1% / 1.5% / 94.2%** on 120 real SMS; 0.04ms per message. Full metrics and the four-generation comparison [below](#quality-metrics--generation-comparison).
 
-### React Native / Expo / browser / Node (TypeScript)
-The engine is distributed through a private channel (source repo stays private). Invited users configure GitHub Packages credentials once:
+---
+
+## Installation (private distribution, invitation-based)
+
+The engine ships through GitHub Packages; you need a team-issued token (`read:packages` only):
 
 ```bash
-# one-time setup (we provide the token and repo name; this is not a public package)
+# one-time setup (~/.npmrc must contain //npm.pkg.github.com/:_authToken=YOUR_TOKEN)
 npm config set "@p3nn4l:registry" https://npm.pkg.github.com
-npm install @p3nn4l/guard-kit
 ```
 
-Install a specific older version (full-package rollback):
+**Choose one of two packages**:
+
+| Package | Contents | Size | For |
+|---|---|---|---|
+| `npm install @p3nn4l/guard-kit` | Radar + Referee (one package, subpath-split usable) | ~1.7MB | Both models (drills/education) |
+| `npm install @p3nn4l/guard-kit-radar` | **Radar only** (engine + weights) | ~770KB | Risk control only (banks/community/chat) |
+
+**Install a specific older version** (`latest` always points to the newest generation):
 
 ```bash
-npm install @p3nn4l/guard-kit@7.0.0   # latest (Radar 7 · Referee 6)
-npm install @p3nn4l/guard-kit@6.2.0   # rollback (Radar 6.2 · Referee 5)
-npm install @p3nn4l/guard-kit@6.0.0   # first v6 release (Radar 6.0 · Referee 5)
+npm install @p3nn4l/guard-kit@7.0.0     # latest (Radar 7 · Referee 6)
+npm install @p3nn4l/guard-kit@6.2.0     # M3-distilled (Radar 6.2 · Referee 5)
+npm install @p3nn4l/guard-kit@6.1.0     # HK-hardened (Radar 6.1 · Referee 5)
+npm install @p3nn4l/guard-kit@6.0.0     # first v6 release (Radar 6.0 · Referee 5)
 ```
+
+The radar-only package supports version rollback the same way (`@p3nn4l/guard-kit-radar@6.x.0`, published in sync).
+
+---
+
+## API reference
+
+### Radar: single-message scoring
+
 ```ts
-import { mlScore, replyScore, mlConversation } from 'guard-kit';
+import { mlScore, mlPercent, mlBandLabel } from '@p3nn4l/guard-kit';
+// radar-only: import { mlScore, mlPercent } from '@p3nn4l/guard-kit-radar';
 
-mlScore('This is Officer Chan from Hong Kong Police. Your account is involved in money laundering. Transfer your savings to this safe account now or you will be arrested.');
-// → { band: 'high', topType: 'impersonation', pCal: 0.99 }
+mlScore('This is Officer Chan. Your account is involved in money laundering. Transfer your savings to a safe account.');
+// → { pCal: 0.99, pRaw: 0.90, band: 'high', topType: 'impersonation', probs: {...} }
 
-replyScore("I will not transfer any money. I'm calling 999 right now to report this.");
-// → { topClass: 'counter', star: 3, confCal: 0.91 }
+mlPercent('This is Officer Chan. Transfer your savings to a safe account.');  // → 99 (int 0-100)
+mlBandLabel('Send me the verification code or your account will be frozen');
+// → { band: 'high', label: '高危', typeLabel: '冒充身份' }
+```
 
-// Multi-turn context (v6): send the tail of the conversation; trigger='context' means the hit came from context
+| Field | Meaning | Suggested use |
+|---|---|---|
+| `pCal` | Calibrated scam probability | Display "AI risk: 87%" |
+| `pRaw` | Raw evidence score | Second gate of the dual-condition band; usually not shown |
+| `band` | `high` / `medium` / `low` | high = strong warning / may block; medium = soft reminder; low = pass |
+| `topType` | `impersonation` / `pay_first` / `bait` | "Suspected impersonation scam" |
+| `probs` | Full class distribution | For custom thresholds |
+| **Percent** | `mlPercent()` → int 0-100 | The unified consumer-facing number |
+
+### Radar: multi-turn context (core feature)
+
+A single grooming opener carries insufficient evidence and never fires; the moment intent appears in the conversation it triggers. `trigger` labels the hit source; clean conversations stay clean:
+
+```ts
+import { mlConversation } from '@p3nn4l/guard-kit';
+
 mlConversation([
   ' mum this is my new number, my phone fell in the water.',
   'Ok son, is everything alright?',
   'Please send HK$8,000 to this account urgently',
 ]);
-// → { band: 'high', pCal: 1.0, trigger: 'context', current: {...} }
-```
-Requires `resolveJsonModule` (on by default in Expo/Next).
-
-Radar-only installs are cheaper via the standalone package: `npm install @p3nn4l/guard-kit-radar` (radar engine + weights only, ~770KB).
-
-### iOS (Swift, SPM)
-> Private distribution: the engine source repo is private. Invited teams authenticate with their GitHub account and add the package directly; other integrators use our Release attachments (prebuilt package + weights).
-Xcode → File → Add Package Dependencies → Add Local… → select the main repo's `swift/` directory:
-```swift
-import GuardKit
-
-let radar = try Radar()
-let score = try radar.score("This is Officer Chan from Hong Kong Police. Your account is involved in money laundering. Transfer your savings to this safe account now.") // score.pCal = 0.99, score.band = "high"
-let percent = radar.mlPercent("Your parcel is held at customs. Pay a release fee of HK$216 now.")  // Int 0-100 → 88
-// score.pCal: Double, score.band: "high"/"medium"/"low", score.topType: String?
-
-let referee = try Referee()
-let rs = try referee.score("OK, I will transfer the money right away.")
-// rs.topClass: "agree", rs.star: 1, rs.confCal: 0.72
+// → { band: 'high', pCal: 0.9999, trigger: 'context', current: {…score of the current message alone…} }
 ```
 
-### Android (Kotlin/Java)
-> Private distribution: invited repo access or Release attachments, then integrate as follows.
-Put the main repo's `models/radar.json` and `models/referee.json` into `app/src/main/assets/`, and drop `GuardKit.kt` into your source tree (depends on `org.json:json`, bundled with Android):
-```kotlin
-val radar = Radar(assets.open("radar.json").readBytes().decodeToString())
-val score = radar.score("This is Officer Chan from Hong Kong Police. Transfer your savings to this safe account now or you will be arrested.")
-```
-
-### Flutter / pure Dart
-> Private distribution: provided as a git dependency (invitation token) or Release attachment.
-Depend on the main repo's `dart/` in `pubspec.yaml` (path dependency or published package); NFKC is provided by `unorm_dart`:
-```dart
-final radar = Radar(File('radar.json').readAsStringSync());
-final score = radar.score('This is Officer Chan from Hong Kong Police. Transfer your savings to this safe account now or you will be arrested.');
-```
-
-### WeChat / Alipay mini programs
-> Private distribution: invited users receive the `miniprogram/` directory (or a Release attachment) to place into a subpackage.
-Copy the main repo's `miniprogram/` directory into a subpackage (both weights ~1.14MB, mind the 2MB main-package limit; radar-only ~852KB):
-```js
-const guard = require('../../miniprogram/guard-kit.js');
-const r = guard.mlScore('This is Officer Chan from Hong Kong Police. Transfer your savings to this safe account now.'); // { pCal: 0.99, band: 'high', topType: 'impersonation', ... }
-const s = guard.replyScore("I will not transfer any money. I'm calling 999 right now."); // { topClass: 'counter', star: 3, ... }
-```
-
-### Cloud HTTP (any client that can send a request)
-> Private distribution: invited users clone the engine repo and deploy themselves.
-```bash
-# Deploy (Cloudflare Workers, within the free tier)
-npx wrangler deploy   # in the main repo's api/ directory
-```
-```
-POST /score        {"text": "..."}         → Radar result JSON
-POST /reply        {"text": "..."}         → Referee result JSON
-POST /conversation {"messages": ["..."]}   → Radar multi-turn context JSON
-GET  /health                              → {"status":"ok","radar":7,"referee":5}
-```
-⚠️ Cloud is only for environments that cannot run the models locally; on-device integration keeps the offline & privacy advantages.
-
-## Radar result fields
-
-| Field | Meaning | Suggested use |
+| `trigger` | Meaning | UI suggestion |
 |---|---|---|
-| `pCal` | Calibrated scam probability | Display "AI risk: 87%" directly |
-| `band` | `high` / `medium` / `low` | high = strong warning, may block; medium = soft reminder; low = pass |
-| **Percent** | **0–100 integer** (the unified consumer-facing contract) | `pCal × 100`; every platform has an `mlPercent(text)` helper |
-| `topType` | `impersonation` identity impersonation / `pay_first` pay-first-pay-later / `bait` part-time & investment bait | Display "suspected impersonation scam" |
-| `probs` | Full class probability distribution | For custom thresholds |
+| `direct` | The current message alone hits | Regular strong warning |
+| `context` | Current message is plain but **with context** it hits | Label "judged with context" |
+| `none` | No risk | Pass |
 
-**Official-notice whitelist**: anti-fraud advisories (police tips, fraud-prevention posts) are full of scam vocabulary and would false-positive the model. The engine ships a deterministic rule (anti-fraud topic word + official advice word appearing together → capped below the suspicious band); behavior is identical on every platform and callers need no special handling.
+Default window = last 4 messages (override via `ML_CONVERSATION_WINDOW`); sticky escalation (no auto-downgrade within a session) is host-side session state.
 
-## Referee result fields
+### Referee: reply scoring
+
+```ts
+import { replyScore, replyStar } from '@p3nn4l/guard-kit';
+
+replyScore("I will not transfer any money. I am calling 999 right now.");
+// → { topClass: 'counter', confCal: 0.98, star: 3, probs: {...} }
+
+replyStar("I will not transfer any money. I am calling 999.");  // → { star: 3, label: '稳住反击', reliable: true }
+```
 
 | Field | Meaning |
 |---|---|
 | `topClass` | `counter` steady counter / `stall` buy time / `agree` comply (dangerous) / `meaningless` no information |
-| `star` | counter=3 / stall=2 / agree=1 / meaningless=1; null when no keyword hit |
-| `confCal` | Calibrated confidence; **when <0.5, show a neutral result without stars** |
+| `star` | counter=3 / stall=2 / agree=1 / meaningless=1 |
+| `confCal` | Calibrated confidence; **below 0.5 show a neutral result without stars** (`REPLY_RELIABLE_THRESHOLD`) |
 
-## Generation comparison (v6 → v6.2 → v7, same sets, all measured)
+### Legacy generations in-process (canary / kill switch)
 
-| Eval set (fresh, blind-written before training) | v6 | v6.1 | v6.2 | **v7** |
-|---|---|---|---|
-| blind-v9 multi-turn: recall / high-FPR | 87.5% / 27.3% | 87.5% / 18.2% | 93.8% / 45.5% | **100% / 0%** |
-| blind-v10: recall / high-FPR | 85.7% / 42.9% | 85.7% / 57.1% | 85.7% / 42.9% | 85.7% / **28.6%** |
-| blind-v11 new surfaces: recall / high-FPR | 76.9% / 8.3% | 84.6% / 8.3% | 76.9% / 33.3% | 76.9% / **8.3%** |
-| HK-ScamBench high-FPR | 12.5% | 12.5% | **0%** | **0%** |
-| Ultra-short probes (zh/en) | 0/2 | 1/2 | 2/2 | 2/2 |
-| Public 120: recall / FPR / accuracy | 92.7 / 3.1 / 95.0 | 92.7 / 3.1 / 95.0 | 87.3 / 4.6 / 91.7 | **89.1 / 1.5 / 94.2** |
-| Referee (same fresh sets: v9 / v10) | — (v5: 65% / 41%) | — | — | **90% / 65%** |
+The 7.0.0 package runs multiple generations side by side — no reinstall needed:
 
-Reading: each generation converges one frontier — v6 landed real-world corpora, v6.2 closed ultra-short variants and institutional FPs, v7 closed the multi-turn blind spot and pushed public-set FPR to 1.5%; single-set oscillations converge in the next generation. All numbers reproducible.
+```ts
+import { mlScore, mlScoreV62, mlScoreV6 } from '@p3nn4l/guard-kit';
+mlScore(msg);    // v7 (default latest)
+mlScoreV62(msg); // v6.2
+mlScoreV6(msg);  // v6.0
+// legacy referee: replyScoreV5(); percents: mlPercentV62() / mlPercentV6()
+```
 
-## Quality metrics (Radar v7)
+### Official-notice whitelist (built in, zero handling)
 
-**Real-world external benchmark** (public real SMS the model never saw, held-out):
-
-| Slice | Metric | v5 | v6 |
-|---|---|---|---|
-| Real English fraud | recall@suspicious / @high | 81.3% / 67.0% | **88.3% / 83.7%** |
-| Real English normal SMS | high-band FPR | 11.4% | **0.2%** |
-| Real Chinese fraud | recall@suspicious / @high | 52.2% / 36.1% | **89.8% / 84.8%** |
-| Chinese pure ads | high-band FPR | 25.1% | **5.8%** |
-| Real Chinese normal SMS | high-band FPR | 10.6% | **0.5%** |
-
-**Multi-way comparison on the same test set** (120 stratified real SMS):
-
-| Approach | Recall | FPR | Accuracy |
-|---|---|---|---|
-| Keyword rules | 1.8% | 0% | 55.0% |
-| **Radar v7 (on-device, 0.04ms)** | **89.1%** | **1.5%** | **94.2%** |
-| LLM zero-shot (cloud, per-call cost) | 74.5% | 13.8% | 80.8% |
-| LLM few-shot (cloud, per-call cost) | 54.5% | 4.6% | 76.7% |
-| MiniMax-M3 zero-shot (flagship, cloud per-call cost) | 56.4% | 4.6% | 77.5% |
-| MiniMax-M3 few-shot (flagship, cloud per-call cost) | 58.2% | 3.1% | 79.2% |
-
-> The public "fraud" slices include keyword-defined gray-zone promo texts, which LLMs reason their way to "advertising" (label-semantics divergence, disclosed as-is); **on the semantically unambiguous HK real cases, M3 few-shot hits 100%/0%** — large models fit as semantic backstops while the radar guards the high-volume first pass offline and free; fusion, not replacement.
-
-**Real Hong Kong case set (zero-shot)**: 12 real HK scam case families (reconstructed case-by-case from ADCC / police / news, source-tagged) + 8 real institutional notices — Radar v7 scores **100% recall (12/12, all high band) / 0% high-band FPR**; keyword rules get **0%** recall; the LLM few-shot also reaches 100% but needs seconds of cloud round-trips.
-> LLM comparison config: MiniMax `abab6.5s-chat` (`chatcompletion_v2`) · temperature 0.1 · max_tokens 40 · 4 labeled examples embedded in the system prompt · strict JSON output; **flagship `MiniMax-M3`** (reasoning model): default temperature · max_tokens 1500 (room for its reasoning), zero-shot uses the same no-example task description and few-shot the same 4 examples, verdict read from the JSON in the answer (falling back to the final reasoning conclusion) — the two M3 rows above are exactly these two modes. Full few-shot/zero-shot/distillation parameters in the main repo README ("LLM configuration").
-
-| Internal | Radar v7 | Referee v6 |
-|---|---|---|
-| Test-set recall / accuracy | 95.7% (high band 94.0%) | 95.8% |
-| Latest honest blind set | recall 100% / high-band 0 FPR (blind-v9 incl. multi-turn) | accuracy 100% |
-| Inference latency | 0.04 ms/item | 0.03 ms/item |
-
-Training data, three auditable sources: 247 handwritten script templates (incl. real cases from ADCC / HK Police / MPS advisories) + **1,392 LLM-distilled items** (MiniMax, five rounds targeted at the FP profile, covering Cantonese/HK scenarios) + **9,274 public real-world training items** (UCI real English SMS + stratified slices of 800k real Chinese SMS), plus 2,142 programmatic augmentations, four languages (SC/TC/Cantonese/English). v6 was promoted after five rounds of "mix-train → dual benchmark → FP-profile-targeted distillation", with the error ledger maintained throughout. Known boundaries and the full model card live in the main repo.
-
-### Who can see what (private distribution boundaries)
-
-| Identity | Can see |
-|---|---|
-| Public visitor (no token) | This repo only (docs / mind maps / HK-ScamBench); no source, no weights |
-| Holder of a `read:packages` token | Can download installable packages (compiled artifacts + weights) only; **cannot see any repository contents** |
-| Engine repo collaborator | Full engine repo contents (training pipeline / corpus) — ⚠️ collaborators on personal repos get write access by default; core team only |
-| Fine-grained token (single repo, Contents:read) | Can resolve the SPM private repo URL (iOS scenario); still no corpus or ledger access |
-
-## FAQ
-
-**Q: Do I need code changes to swap in a new model version?**
-No. The weight JSON is a stable contract (filenames decoupled from versions) — drop the new `radar.json` / `referee.json` into the resource directory; the API is unchanged.
-
-**Q: Can I customize risk thresholds?**
-Yes. `probs` gives the full class distribution and `pCal` is a continuous value; the bands (0.75/0.35) are just the default product policy.
-
-**Q: What about false positives?**
-Real-world high-band FPR is 0.2-5.8% (v5: 10.6-25.1%). If one still appears in production, the main repo's error ledger and evolution pipeline (`evolve.py`) fold corrections into the next training run automatically.
-
-**Q: How do I integrate multi-turn chat?**
-Pass the recent messages in time order to `mlConversation(messages)` (same API on six platforms). A grooming opener alone won't fire; the moment a follow-up reveals scam intent it triggers, and when `trigger='context'` the UI should label it "judged with context".
-
-**Q: Commercial licensing?**
-Code and model weights are **All Rights Reserved** (see [LICENSE.txt](LICENSE.txt)) — this repository publishes integration docs only; the engine is distributed through a private channel (invitation + GitHub Packages private registry / Release attachments) under written grant. The HK-ScamBench dataset is separately released under CC BY 4.0. Weights are self-trained and owned; no third-party model dependencies.
+Anti-fraud advisories are full of scam vocabulary and cannot be separated textually from real scams. The engine ships deterministic rules (topic+advice dual condition; official vs suspicious domains mutually exclusive), identical on every platform — **callers do nothing**.
 
 ---
 
-**Main repo** (source + weights + training pipeline + six-platform ports): see the repo link or contact the maintainer.
+## Six integration channels
+
+### TS / React Native / Expo / Node (primary)
+
+Exactly the API reference above. Subpath split (full package, referee never loaded at runtime):
+
+```ts
+import { mlScore } from '@p3nn4l/guard-kit/radar';
+import { replyScore } from '@p3nn4l/guard-kit/referee';
+```
+
+### iOS (Swift · SPM)
+
+Xcode → Add Package Dependency → `https://github.com/P3NN4L/guard-kit-code` (invited GitHub auth):
+
+```swift
+import GuardKit
+
+let radar = try Radar()
+let s = try radar.score("我是王警官，你涉嫌洗钱，把存款转入安全账户")  // s.pCal, s.band, s.topType
+let pct = radar.mlPercent("suspicious message")               // Int 0-100
+let conv = try radar.mlConversation([" mum this is my new number.", "Please send HK$8,000 urgently"])
+// conv.band / conv.trigger / conv.current
+let rs = try Referee().score("好的我马上转账")                  // rs.topClass == "agree", rs.star == 1
+// radar-only: simply never initialize Referee
+```
+
+### Android (Kotlin/Java · Maven)
+
+Configure the Maven repo with invited credentials (`gpr.user` = GitHub username, `gpr.key` = token, in `~/.gradle/gradle.properties`):
+
+```kotlin
+repositories {
+    maven {
+        url = uri("https://maven.pkg.github.com/P3NN4L/guard-kit-code")
+        credentials {
+            username = project.findProperty("gpr.user") as String?
+            password = project.findProperty("gpr.key") as String?
+        }
+    }
+}
+dependencies { implementation("com.settlepal:guardkit:7.0.0") }
+```
+
+```kotlin
+val radar = Radar(assets.open("radar.json").readBytes().decodeToString())
+val s = radar.score("我是王警官，你涉嫌洗钱，把存款转入安全账户")
+val conv = radar.mlConversation(listOf(" mum this is my new number.", "Please send HK\$8,000 urgently"))
+val pct = radar.mlPercent("suspicious message")                // Int 0-100
+```
+
+Weights go into `app/src/main/assets/` (`radar.json` / `referee.json`, shipped as Release attachments). Radar-only: bundle only `radar.json` and use only `Radar`.
+
+### Flutter / Dart
+
+pubspec git dependency (invited) or Release attachment:
+
+```yaml
+dependencies:
+  guard_kit:
+    git:
+      url: https://github.com/P3NN4L/guard-kit-code.git
+      path: dart
+```
+
+```dart
+final radar = Radar(File('radar.json').readAsStringSync());
+final s = radar.score('我是王警官，你涉嫌洗钱，把存款转入安全账户');
+final conv = radar.mlConversation([' mum this is my new number.', 'Please send HK\$8,000 urgently']);
+```
+
+### WeChat / Alipay mini programs
+
+Receive the `miniprogram/` directory (or the Release attachment `guard-kit-miniprogram.zip`), place it into a subpackage:
+
+```js
+const guard = require('../../miniprogram/guard-kit.js');        // both models
+const r = guard.mlScore('我是王警官，你涉嫌洗钱，把存款转入安全账户');
+const c = guard.mlConversation(['opener', 'money ask']);        // { band, trigger, ... }
+const s = guard.replyScore('我不会转钱的');                      // { topClass, star, ... }
+// radar-only: require('.../guard-kit-radar.js') (referee weights never load; includes mlPercent/mlConversation)
+```
+
+### Cloud HTTP (any client)
+
+Invited users clone and deploy themselves (Cloudflare Workers, free tier, `wrangler deploy`):
+
+```
+POST /score        {"text": "..."}         → Radar (incl. percent)
+POST /reply        {"text": "..."}         → Referee
+POST /conversation {"messages": ["..."]}   → multi-turn context (incl. trigger)
+GET  /health                              → {"status":"ok","radar":7,"referee":6}
+```
+
+⚠️ Cloud is only a fallback for environments that cannot run the models locally; on-device integration keeps the offline & privacy advantages.
+
+---
+
+## Quality metrics & generation comparison
+
+### Four generations on the same sets (all fresh, blind-written before training, measured)
+
+| Eval set | v6 | v6.1 | v6.2 | **v7** |
+|---|---|---|---|---|
+| blind-v9 multi-turn: recall/high-FPR | 87.5/27.3 | 87.5/18.2 | 93.8/45.5 | **100/0** |
+| blind-v10: recall/high-FPR | 85.7/42.9 | 85.7/57.1 | 85.7/42.9 | 85.7/**28.6** |
+| blind-v11 new surfaces: recall/high-FPR | 76.9/8.3 | **84.6**/8.3 | 76.9/33.3 | 76.9/**8.3** |
+| HK-ScamBench high-FPR | 12.5 | 12.5 | **0** | **0** |
+| Ultra-short probes (zh/en) | 0/2 | 1/2 | 2/2 | 2/2 |
+| Public 120: recall/FPR/accuracy | 92.7/3.1/95.0 | 92.7/3.1/95.0 | 87.3/4.6/91.7 | **89.1/1.5/94.2** |
+| Referee (same fresh sets: v9/v10) | — (v5: 65/41) | — | — | **90/65** |
+
+Reading: each generation converges one frontier — v6 landed real-world corpora, v6.1 hardened HK, v6.2 closed ultra-short variants and institutional FPs, v7 closed the multi-turn blind spot and pushed public-set FPR to 1.5%. All numbers reproducible (fixed seeds, pinned samples, single-thread official build).
+
+### Multi-way comparison (same 120 real SMS)
+
+| Approach | Recall | FPR | Accuracy | Cost |
+|---|---|---|---|---|
+| Keyword rules | 1.8% | 0% | 55.0% | — |
+| **Radar v7 (on-device, 0.04ms)** | **89.1%** | **1.5%** | **94.2%** | offline · free |
+| LLM zero-shot (cloud) | 74.5% | 13.8% | 80.8% | seconds · online · per-call |
+| LLM few-shot (cloud) | 54.5% | 4.6% | 76.7% | seconds · online · per-call |
+| MiniMax-M3 zero-shot (flagship) | 56.4% | 4.6% | 77.5% | seconds of reasoning · online · per-call |
+| MiniMax-M3 few-shot (flagship) | 58.2% | 3.1% | 79.2% | seconds of reasoning · online · per-call |
+
+> LLM comparison config: MiniMax abab6.5s-chat / MiniMax-M3 (`chatcompletion_v2`) · temperature 0.1 · 4 labeled few-shot examples · strict JSON verdict. Full parameters in the private engine README ("LLM configuration").
+
+### Training volume (v7, all self-built / publicly reproducible)
+
+| Data | Radar v7 | Referee v6 |
+|---|---|---|
+| Handwritten templates | 247 | 174 |
+| LLM-distilled (MiniMax, 9 rounds) | 1,530 items | 314 replies (4 intents × zh/en/Cantonese) |
+| Multi-turn corpus (M3) | 156 dialogues | — |
+| Public real-world data | 9,274 items (UCI + 800k Chinese stratified) | — |
+| Programmatic augmentation | 2,142 | same recipe |
+| Error-ledger hardening | 896 rows (×2) | 185 rows (×2) |
+| **Total** | **13,547 rows** | **1,448 items** |
+
+Four languages (SC/TC/Cantonese/English); the normal side deliberately includes anti-fraud advisories, urgent-but-legitimate, and promo/installment hard negatives. Known boundaries and the full model card live in the private engine repo.
+
+---
+
+## Private distribution (six channels)
+
+| Channel | Route |
+|---|---|
+| TS/RN/Expo/Node | GitHub Packages npm (see Installation) |
+| iOS (SPM) | private repo URL + invited GitHub auth |
+| Android (Gradle) | GitHub Packages Maven (`com.settlepal:guardkit`) |
+| Flutter/Dart | git dependency (invited) or Release attachment |
+| Mini programs | Release attachment (`guard-kit-miniprogram.zip`) |
+| Cloud Worker | Release attachment (`guard-kit-worker.zip`) |
+
+### Who can see what (permission boundaries)
+
+| Identity | Visible |
+|---|---|
+| Public visitor (no token) | This repo only (docs / mind maps / benchmark); no source, no weights |
+| `read:packages` token holder | Downloadable packages (compiled artifacts + weights) only; **cannot see any repository contents** |
+| Engine repo collaborator | Full engine repo (training pipeline / corpus) — collaborators on personal repos get write access by default; core team only |
+| Fine-grained token (single repo, Contents:read) | Can resolve the SPM private repo URL; still no corpus or ledger |
+
+---
+
+## FAQ
+
+**Q: Do I need code changes to upgrade?**
+No. The weight JSON is a stable contract (filenames decoupled from versions) — swap the file in `models/`, or change the dependency version on npm. The API never changes across generations.
+
+**Q: Custom thresholds?**
+Yes. `pCal` is continuous and `probs` is the full distribution; the bands (0.75/0.35 × raw-evidence dual condition) are just the default product policy.
+
+**Q: False positives?**
+1.5% on the public 120. If one appears in production, the private repo's error ledger and evolution pipeline fold corrections into the next training run.
+
+**Q: Multi-turn chat?**
+Pass recent messages in time order to `mlConversation(messages)`. Grooming openers never fire; intent triggers immediately; label `trigger='context'` as "judged with context" in the UI.
+
+**Q: Commercial licensing?**
+Code and weights are **All Rights Reserved** ([LICENSE.txt](LICENSE.txt)) — use under written invitation; the HK-ScamBench dataset is separately CC BY 4.0. Weights are self-trained and owned; no third-party model dependencies.
+
+---
+
+**Private engine repo** (source + weights + training pipeline + six-platform ports): invited access to `guard-kit-code`.

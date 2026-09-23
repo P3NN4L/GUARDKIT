@@ -41,6 +41,14 @@
 npm config set "@p3nn4l:registry" https://npm.pkg.github.com
 npm install @p3nn4l/guard-kit
 ```
+
+安装指定旧版本（整包回退）：
+
+```bash
+npm install @p3nn4l/guard-kit@7.0.0   # 最新（雷达 7 · 裁判 6）
+npm install @p3nn4l/guard-kit@6.2.0   # 回退（雷达 6.2 · 裁判 5）
+npm install @p3nn4l/guard-kit@6.0.0   # 首发六代（雷达 6.0 · 裁判 5）
+```
 ```ts
 import { mlBandLabel, replyStar, mlConversation } from 'guard-kit';
 

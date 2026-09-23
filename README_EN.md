@@ -41,6 +41,14 @@ The engine is distributed through a private channel (source repo stays private).
 npm config set "@p3nn4l:registry" https://npm.pkg.github.com
 npm install @p3nn4l/guard-kit
 ```
+
+Install a specific older version (full-package rollback):
+
+```bash
+npm install @p3nn4l/guard-kit@7.0.0   # latest (Radar 7 · Referee 6)
+npm install @p3nn4l/guard-kit@6.2.0   # rollback (Radar 6.2 · Referee 5)
+npm install @p3nn4l/guard-kit@6.0.0   # first v6 release (Radar 6.0 · Referee 5)
+```
 ```ts
 import { mlScore, replyScore, mlConversation } from 'guard-kit';
 

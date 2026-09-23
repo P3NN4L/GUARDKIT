@@ -61,6 +61,7 @@ mlConversation([
 需要 `resolveJsonModule`（Expo/Next 默认开启）。
 
 ### iOS（Swift，SPM）
+> 私有分发：引擎源码仓为私有。受邀团队以 GitHub 账号授权后可直接 Add Package Dependency；其他接入方使用我们提供的 Release 附件（含预编译包与权重）。
 Xcode → File → Add Package Dependencies → Add Local… → 选主仓库 `swift/` 目录：
 ```swift
 import GuardKit
@@ -76,6 +77,7 @@ let rs = try referee.score("好的我马上转账")
 ```
 
 ### Android（Kotlin/Java）
+> 私有分发：受邀访问源码仓或获取 Release 附件，随后按下列方式集成。
 把主仓库 `models/radar.json`、`models/referee.json` 放进 `app/src/main/assets/`，`GuardKit.kt` 拖进源码树（依赖 `org.json:json`，Android 自带）：
 ```kotlin
 val radar = Radar(assets.open("radar.json").readBytes().decodeToString())
@@ -83,6 +85,7 @@ val score = radar.score("把存款转入安全账户配合调查")
 ```
 
 ### Flutter / 纯 Dart
+> 私有分发：以 git 依赖（受邀 token）或 Release 附件提供。
 `pubspec.yaml` 依赖主仓库 `dart/`（路径依赖或发布包），NFKC 由 `unorm_dart` 提供：
 ```dart
 final radar = Radar(File('radar.json').readAsStringSync());
@@ -90,6 +93,7 @@ final score = radar.score('把存款转入安全账户配合调查');
 ```
 
 ### 微信 / 支付宝小程序
+> 私有分发：受邀获取 `miniprogram/` 目录（或 Release 附件）后放入分包。
 把主仓库 `miniprogram/` 目录放进分包（两份权重共约 1.14MB，注意主包 2MB 限制；只接雷达约 852KB）：
 ```js
 const guard = require('../../miniprogram/guard-kit.js');
@@ -98,6 +102,7 @@ const s = guard.replyScore('我不会转钱的'); // { topClass, star, ... }
 ```
 
 ### 云端 HTTP（任何能发请求的端）
+> 私有分发：受邀 clone 引擎仓后自行部署。
 ```bash
 # 部署（Cloudflare Workers，免费额度内）
 npx wrangler deploy   # 在主仓库 api/ 目录

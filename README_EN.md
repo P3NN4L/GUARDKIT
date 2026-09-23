@@ -61,6 +61,7 @@ mlConversation([
 Requires `resolveJsonModule` (on by default in Expo/Next).
 
 ### iOS (Swift, SPM)
+> Private distribution: the engine source repo is private. Invited teams authenticate with their GitHub account and add the package directly; other integrators use our Release attachments (prebuilt package + weights).
 Xcode → File → Add Package Dependencies → Add Local… → select the main repo's `swift/` directory:
 ```swift
 import GuardKit
@@ -76,6 +77,7 @@ let rs = try referee.score("OK, I will transfer the money right away.")
 ```
 
 ### Android (Kotlin/Java)
+> Private distribution: invited repo access or Release attachments, then integrate as follows.
 Put the main repo's `models/radar.json` and `models/referee.json` into `app/src/main/assets/`, and drop `GuardKit.kt` into your source tree (depends on `org.json:json`, bundled with Android):
 ```kotlin
 val radar = Radar(assets.open("radar.json").readBytes().decodeToString())
@@ -83,6 +85,7 @@ val score = radar.score("This is Officer Chan from Hong Kong Police. Transfer yo
 ```
 
 ### Flutter / pure Dart
+> Private distribution: provided as a git dependency (invitation token) or Release attachment.
 Depend on the main repo's `dart/` in `pubspec.yaml` (path dependency or published package); NFKC is provided by `unorm_dart`:
 ```dart
 final radar = Radar(File('radar.json').readAsStringSync());
@@ -90,6 +93,7 @@ final score = radar.score('This is Officer Chan from Hong Kong Police. Transfer 
 ```
 
 ### WeChat / Alipay mini programs
+> Private distribution: invited users receive the `miniprogram/` directory (or a Release attachment) to place into a subpackage.
 Copy the main repo's `miniprogram/` directory into a subpackage (both weights ~1.14MB, mind the 2MB main-package limit; radar-only ~852KB):
 ```js
 const guard = require('../../miniprogram/guard-kit.js');
@@ -98,6 +102,7 @@ const s = guard.replyScore("I will not transfer any money. I'm calling 999 right
 ```
 
 ### Cloud HTTP (any client that can send a request)
+> Private distribution: invited users clone the engine repo and deploy themselves.
 ```bash
 # Deploy (Cloudflare Workers, within the free tier)
 npx wrangler deploy   # in the main repo's api/ directory

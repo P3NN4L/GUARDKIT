@@ -1,4 +1,4 @@
-Copyright (c) 2026 SettlePal / guard-kit team, Hong Kong Baptist University.
+Copyright (c) 2026 Zhanjian Li (P3NN4L).
 All Rights Reserved.
 
 本仓库内容（接入文档、架构脑图）为专有财产，保留一切权利。

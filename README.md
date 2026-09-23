@@ -68,6 +68,8 @@ mlConversation([
 ```
 需要 `resolveJsonModule`（Expo/Next 默认开启）。
 
+只接雷达装独立包更省：`npm install @p3nn4l/guard-kit-radar`（仅雷达引擎与权重，约 770KB）。
+
 ### iOS（Swift，SPM）
 > 私有分发：引擎源码仓为私有。受邀团队以 GitHub 账号授权后可直接 Add Package Dependency；其他接入方使用我们提供的 Release 附件（含预编译包与权重）。
 Xcode → File → Add Package Dependencies → Add Local… → 选主仓库 `swift/` 目录：

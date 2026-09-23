@@ -68,6 +68,8 @@ mlConversation([
 ```
 Requires `resolveJsonModule` (on by default in Expo/Next).
 
+Radar-only installs are cheaper via the standalone package: `npm install @p3nn4l/guard-kit-radar` (radar engine + weights only, ~770KB).
+
 ### iOS (Swift, SPM)
 > Private distribution: the engine source repo is private. Invited teams authenticate with their GitHub account and add the package directly; other integrators use our Release attachments (prebuilt package + weights).
 Xcode → File → Add Package Dependencies → Add Local… → select the main repo's `swift/` directory:

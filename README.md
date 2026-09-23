@@ -5,7 +5,7 @@
 **端内反诈打分引擎（雷达 v7 · 裁判 v6）**——两个自训小模型，**可实现无缝嵌入各类 App**：原生 iOS/Android、RN/Expo、Flutter、小程序、网页与云端。纯函数 + 内置权重：零依赖、完全离线、单条推理 <0.1ms，同一份权重六平台分数逐位一致（≤1e-6）。
 
 > 本仓库（公开）只放接入文档与公开基准；**引擎源码、权重与训练管线在私有仓分发**（受邀制，见 [私有分发](#私有分发六端)）。
-> 🧠 一图看懂：[在线渲染·中文脑图](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap.html) · [在线渲染·英文脑图](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap-en.html)（[源文件·中](docs/guard-kit-mindmap.html) / [源文件·英](docs/guard-kit-mindmap-en.html)）
+> 🧠 一图看懂：[中文脑图](docs/guard-kit-mindmap.html) · [英文脑图](docs/guard-kit-mindmap-en.html)（GitHub 页内显示源码，下载后双击打开即为渲染图）
 > 📊 我们发布的公开基准 **[HK-ScamBench](benchmark/HK-ScamBench.md)**：12 个真实香港骗案家族 + 8 机构通知，出处逐条标注，欢迎用你的系统复测引用。
 
 ---

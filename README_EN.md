@@ -5,7 +5,7 @@ English · [简体中文](README.md)
 **On-device anti-scam scoring engine (Radar v7 · Referee v6)** — two self-trained compact models that **embed seamlessly into any app**: native iOS/Android, RN/Expo, Flutter, mini programs, web and cloud. Pure functions + built-in weights: zero dependencies, fully offline, <0.1 ms per inference, bit-identical scores across all six platforms (≤1e-6).
 
 > This repo (public) hosts integration docs and the public benchmark only; **engine source, weights and training pipeline are distributed from a private repo** (invitation-based, see [Private distribution](#private-distribution-six-channels)).
-> 🧠 At a glance: [online mind map · zh](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap.html) · [online mind map · en](https://htmlpreview.github.io/?https://raw.githubusercontent.com/P3NN4L/GUARDKIT/main/docs/guard-kit-mindmap-en.html) ([source · zh](docs/guard-kit-mindmap.html) / [source · en](docs/guard-kit-mindmap-en.html))
+> 🧠 At a glance: [Mind map · zh](docs/guard-kit-mindmap.html) · [Mind map · en](docs/guard-kit-mindmap-en.html) — GitHub shows HTML as source; download and open locally for the rendered view.
 > 📊 Our published benchmark **[HK-ScamBench](benchmark/HK-ScamBench_EN.md)**: 12 real Hong Kong scam case families + 8 institutional notices, source-tagged — re-run it with your own system and cite freely.
 
 ---

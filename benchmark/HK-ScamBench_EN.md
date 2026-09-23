@@ -37,11 +37,13 @@ English · [简体中文](HK-ScamBench.md)
 | System | Recall | FPR | Accuracy | Notes |
 |---|---|---|---|---|
 | Keyword rules | 0% | 0% | 40.0% | completely blind to HK scripts |
-| **guard-kit Radar v6.1 (on-device, 852KB)** | **100%** (12/12, all high band, calibrated ≥ 0.9) | 12.5% (1/8) | 95.0% | 0.04ms · offline · free |
+| **guard-kit Radar v7 (on-device, 852KB)** | **100%** (12/12, all high band, calibrated ≥ 0.9) | **0% (0/8)** | **100%** | 0.04ms · offline · free |
 | MiniMax abab6.5s few-shot (cloud) | 100% | 12.5% | 95.0% | seconds · online · per-call cost |
 | MiniMax-M3 few-shot (flagship, cloud) | 100% | 0% | 100% | seconds of reasoning · online · per-call cost |
 
-> Reading: a flagship LLM can be perfect on unambiguous real cases, but its latency/cost/privacy profile rules out on-device mass screening; a small on-device model with domain corpus and calibration reaches the same recall at 0.04ms. Re-run with your own system and cite freely.
+> Reading: a flagship LLM can be perfect on unambiguous real cases, but its latency/cost/privacy profile rules out on-device mass screening; a small on-device model with domain corpus and calibration reaches **100%/100%** at 0.04ms (v7 ties the M3 few-shot at a perfect score, offline and free). Re-run with your own system and cite freely.
+>
+> Historical versions (same set, auditable): v6.0 = 100% / 12.5% / 95.0%; v6.1 = 100% / 12.5% / 95.0%; v6.2 = 100% / 0% / 100%; v7 = 100% / 0% / 100%.
 
 ## Citation
 

@@ -315,7 +315,7 @@ Yes. `pCal` is continuous and `probs` is the full distribution; the bands (0.75/
 Pass recent messages in time order to `mlConversation(messages)`. Grooming openers never fire; intent triggers immediately; label `trigger='context'` as "judged with context" in the UI.
 
 **Q: Commercial licensing?**
-Code and weights are **All Rights Reserved** ([LICENSE.txt](LICENSE.txt)) — use under written invitation; the HK-ScamBench dataset is separately CC BY 4.0. Weights are self-trained and owned; no third-party model dependencies.
+Code and weights use a **two-tier license** ([LICENSE.txt](LICENSE.txt)): **free for personal and non-commercial use** (study, research, teaching, competitions, non-commercial projects); **commercial use requires a paid licence** (contact: [github.com/P3NN4L](https://github.com/P3NN4L)). The HK-ScamBench dataset is separately CC BY 4.0. Weights are self-trained and owned; no third-party model dependencies.
 
 ---
 

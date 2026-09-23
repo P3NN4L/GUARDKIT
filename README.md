@@ -314,7 +314,7 @@ GET  /health                              → {"status":"ok","radar":7,"referee"
 把最近消息按时间序传 `mlConversation(messages)`。单句铺垫不误报，意图出现即触发；`trigger='context'` 时 UI 标注「结合上文判定」。
 
 **Q：商用授权？**
-代码与模型权重**保留一切权利**（[LICENSE.txt](LICENSE.txt)）——受邀书面授权使用；HK-ScamBench 数据集单独 CC BY 4.0。权重自训自有，无第三方模型依赖。
+代码与模型权重采用**双档授权**（[LICENSE.txt](LICENSE.txt)）：**个人与非商业用途免费**（学习、研究、教学、竞赛、非商业项目），**商用须付费授权**（联系 [github.com/P3NN4L](https://github.com/P3NN4L)）；HK-ScamBench 数据集单独 CC BY 4.0。权重自训自有，无第三方模型依赖。
 
 ---
 

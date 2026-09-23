@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>guard-kit · 反诈引擎脑图（雷达 v6.1）</title>
+<title>guard-kit · 反诈引擎脑图（雷达 v7）</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: "PingFang HK", "PingFang SC", "Noto Sans CJK HK", "Microsoft YaHei", sans-serif; background: #F4F7F9; overflow: auto; }
@@ -29,7 +29,7 @@
 <script>
 const DATA = [
  { side: 'R', cls: 'b1', title: '双模型（端内权重）<br><small style="font-weight:400">雷达 852KB · 裁判 285KB</small>', x: 1130, y: 40, leaves: [
-   { t: '<b>雷达 v6.1 · 消息风险</b>', kids: ['输出：校准概率 + 原始证据分 + 三档（高危/可疑/放行）+ 骗术大类 + 百分值 0-100 整数', '档位双条件：校准置信与原始证据同时达标（高危 0.75×0.505 / 可疑 0.35×0.455，抗校准灰区膨胀）'] },
+   { t: '<b>雷达 v7 · 消息风险</b>', kids: ['输出：校准概率 + 原始证据分 + 三档（高危/可疑/放行）+ 骗术大类 + 百分值 0-100 整数', '档位双条件：校准置信与原始证据同时达标（高危 0.75×0.505 / 可疑 0.35×0.455，抗校准灰区膨胀）'] },
    { t: '<b>多轮语境检测</b>', kids: ['取当前句单独分与最近 4 条拼接分的较大者，触发来源标注（直接命中 / 结合上文）', '单句铺垫不误报，第二句露意图即「结合上文」触发；粘性升级归宿主会话状态'] },
    { t: '<b>裁判 v5 · 回复质量</b>', kids: ['四意图（反击/拖延/配合/无效）+ 星级 + 校准置信度', '置信度&lt;0.5 时建议界面显示中性、不评星'] },
  ]},
@@ -87,7 +87,7 @@ function draw() {
   }).join('');
 }
 const cx = 1070, cy = 1030;
-addNode('guard-kit 反诈打分引擎<small>雷达 v6.1 · 裁判 v5 · 六平台 · 离线 0.04ms · 零幻觉</small>', 'center', cx - 140, cy - 34, 280);
+addNode('guard-kit 反诈打分引擎<small>雷达 v7 · 裁判 v5 · 六平台 · 离线 0.04ms · 零幻觉</small>', 'center', cx - 140, cy - 34, 280);
 const COLORS = { b1: '#2C6E8F', b2: '#8F5A2C', b3: '#4A7B96', b4: '#34756B', b5: '#7A5C8F', b6: '#45622E', b7: '#8F2C4E' };
 DATA.forEach(br => {
   const bw = 300;

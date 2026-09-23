@@ -238,7 +238,7 @@ GET  /health                              → {"status":"ok","radar":7,"referee"
 ### Four generations on the same sets (all fresh, blind-written before training, measured)
 
 | Eval set | v6 | v6.1 | v6.2 | **v7** |
-|---|---|---|---|---|
+|---|---|---|---|---|---|
 | blind-v9 multi-turn: recall/high-FPR | 87.5/27.3 | 87.5/18.2 | 93.8/45.5 | **100/0** |
 | blind-v10: recall/high-FPR | 85.7/42.9 | 85.7/57.1 | 85.7/42.9 | 85.7/**28.6** |
 | blind-v11 new surfaces: recall/high-FPR | 76.9/8.3 | **84.6**/8.3 | 76.9/33.3 | 76.9/**8.3** |

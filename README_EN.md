@@ -145,15 +145,15 @@ GET  /health                              → {"status":"ok","radar":7,"referee"
 
 ## Generation comparison (v6 → v6.2 → v7, same sets, all measured)
 
-| Eval set (fresh, blind-written before training) | v6 (first) | v6.2 | **v7** |
+| Eval set (fresh, blind-written before training) | v6 | v6.1 | v6.2 | **v7** |
 |---|---|---|---|
-| blind-v9 multi-turn: recall / high-FPR | 87.5% / 27.3% | 93.8% / 45.5% | **100% / 0%** |
-| blind-v10: recall / high-FPR | 85.7% / 42.9% | 85.7% / 42.9% | 85.7% / **28.6%** |
-| blind-v11 new surfaces: recall / high-FPR | 76.9% / 8.3% | 76.9% / 33.3% | 76.9% / **8.3%** |
-| HK-ScamBench high-FPR | 12.5% | **0%** | **0%** |
-| Ultra-short probes (zh/en) | 0/2 | 2/2 | 2/2 |
-| Public 120: recall / FPR / accuracy | 92.7 / 3.1 / 95.0 | 87.3 / 4.6 / 91.7 | **89.1 / 1.5 / 94.2** |
-| Referee (same fresh sets: v9 / v10) | — (v5: 65% / 41%) | — | **90% / 65%** |
+| blind-v9 multi-turn: recall / high-FPR | 87.5% / 27.3% | 87.5% / 18.2% | 93.8% / 45.5% | **100% / 0%** |
+| blind-v10: recall / high-FPR | 85.7% / 42.9% | 85.7% / 57.1% | 85.7% / 42.9% | 85.7% / **28.6%** |
+| blind-v11 new surfaces: recall / high-FPR | 76.9% / 8.3% | 84.6% / 8.3% | 76.9% / 33.3% | 76.9% / **8.3%** |
+| HK-ScamBench high-FPR | 12.5% | 12.5% | **0%** | **0%** |
+| Ultra-short probes (zh/en) | 0/2 | 1/2 | 2/2 | 2/2 |
+| Public 120: recall / FPR / accuracy | 92.7 / 3.1 / 95.0 | 92.7 / 3.1 / 95.0 | 87.3 / 4.6 / 91.7 | **89.1 / 1.5 / 94.2** |
+| Referee (same fresh sets: v9 / v10) | — (v5: 65% / 41%) | — | — | **90% / 65%** |
 
 Reading: each generation converges one frontier — v6 landed real-world corpora, v6.2 closed ultra-short variants and institutional FPs, v7 closed the multi-turn blind spot and pushed public-set FPR to 1.5%; single-set oscillations converge in the next generation. All numbers reproducible.
 

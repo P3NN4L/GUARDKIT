@@ -34,8 +34,12 @@ Design properties:
 ## Six-platform quick start
 
 ### React Native / Expo / browser / Node (TypeScript)
+The engine is distributed through a private channel (source repo stays private). Invited users configure GitHub Packages credentials once:
+
 ```bash
-npm install guard-kit
+# one-time setup (we provide the token and repo name; this is not a public package)
+npm config set "@settlepal:registry" https://npm.pkg.github.com
+npm install @settlepal/guard-kit
 ```
 ```ts
 import { mlScore, replyScore, mlConversation } from 'guard-kit';
@@ -177,7 +181,7 @@ Real-world high-band FPR is 0.2-5.8% (v5: 10.6-25.1%). If one still appears in p
 Pass the recent messages in time order to `mlConversation(messages)` (same API on six platforms). A grooming opener alone won't fire; the moment a follow-up reveals scam intent it triggers, and when `trigger='context'` the UI should label it "judged with context".
 
 **Q: Commercial licensing?**
-MIT. The weights are self-trained and owned; no third-party model dependencies.
+Code and model weights are **All Rights Reserved** — this repository publishes integration docs only; the engine is distributed through a private channel (invitation + GitHub Packages private registry / Release attachments) under written grant. The HK-ScamBench dataset is separately released under CC BY 4.0. Weights are self-trained and owned; no third-party model dependencies.
 
 ---
 

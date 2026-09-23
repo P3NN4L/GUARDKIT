@@ -34,8 +34,12 @@
 ## 六平台接入速查
 
 ### React Native / Expo / 浏览器 / Node（TypeScript）
+引擎以私有通道分发（源码仓保持私有）：受邀者配置 GitHub Packages 凭据后安装——
+
 ```bash
-npm install guard-kit
+# 一次性配置（我们提供 token 与仓库名，非公开包）
+npm config set "@settlepal:registry" https://npm.pkg.github.com
+npm install @settlepal/guard-kit
 ```
 ```ts
 import { mlBandLabel, replyStar, mlConversation } from 'guard-kit';
@@ -177,7 +181,7 @@ GET  /health                              → {"status":"ok","radar":6.1,"refere
 把最近几条消息按时间序传给 `mlConversation(messages)`（六平台同 API）。单句铺垫不会误报，第二句露出诈骗意图即触发，`trigger='context'` 时 UI 建议标注「结合上文判定」。
 
 **Q：商用授权？**
-MIT。权重自训自有，无第三方模型依赖。
+代码与模型权重**保留一切权利**（All Rights Reserved）——本仓库仅公开接入文档；引擎以私有分发通道（受邀 + GitHub Packages 私有包 / Release 附件）提供，按书面授权使用。基准数据集 HK-ScamBench 单独以 CC BY 4.0 发布。权重自训自有，无第三方模型依赖。
 
 ---
 

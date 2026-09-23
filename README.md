@@ -38,8 +38,8 @@
 
 ```bash
 # 一次性配置（我们提供 token 与仓库名，非公开包）
-npm config set "@settlepal:registry" https://npm.pkg.github.com
-npm install @settlepal/guard-kit
+npm config set "@p3nn4l:registry" https://npm.pkg.github.com
+npm install @p3nn4l/guard-kit
 ```
 ```ts
 import { mlBandLabel, replyStar, mlConversation } from 'guard-kit';

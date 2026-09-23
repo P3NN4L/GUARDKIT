@@ -38,8 +38,8 @@ The engine is distributed through a private channel (source repo stays private).
 
 ```bash
 # one-time setup (we provide the token and repo name; this is not a public package)
-npm config set "@settlepal:registry" https://npm.pkg.github.com
-npm install @settlepal/guard-kit
+npm config set "@p3nn4l:registry" https://npm.pkg.github.com
+npm install @p3nn4l/guard-kit
 ```
 ```ts
 import { mlScore, replyScore, mlConversation } from 'guard-kit';

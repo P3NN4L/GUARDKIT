@@ -2,7 +2,7 @@
 
 **Weighted Radar — a five-engine on-device anti-fraud scoring system**: every message is scored independently by four engines (the v8 distilled-student primary + Radar v7 + SVM + NB) and fused into the final verdict by weighted voting, with the rules layer (three institutional-whitelist families) holding veto power; a Referee additionally grades reply quality. **Zero dependencies, fully offline, <0.1ms per message**, supporting Simplified/Traditional Chinese, Cantonese and English — embeddable into any app: banking, community, chat, payments, education. It outputs risk probabilities and bands only; it never generates text, never goes online, never uploads data.
 
-- Current version: `@p3nn4l/guard-kit@8.0.0` (five-engine system; npm package carries the on-device base — radar/referee/rules layer/multi-turn — primary-engine weights via Release attachments/hot-update)
+- Current version: `@p3nn4l/guard-kit@1.0.0` (five-engine system; npm package carries the on-device base — radar/referee/rules layer/multi-turn — primary-engine weights via Release attachments/hot-update)
 - Distribution: GitHub Packages private registry + Release attachments (invitation-based; see [permissions](#who-sees-what-permission-boundaries))
 - License: **free for personal & non-commercial use; paid licence for commercial use** (see [LICENSE](LICENSE.txt))
 - This repo hosts the integration docs and public benchmark; it contains no engine source or raw weights
@@ -21,7 +21,7 @@
 ## Install & usage (TS / React Native / Expo / Node)
 
 ```bash
-npm install @p3nn4l/guard-kit@8.0.0
+npm install @p3nn4l/guard-kit@1.0.0
 ```
 
 ```ts
@@ -46,7 +46,7 @@ Risk control only? Install the smaller radar-only package: `npm install @p3nn4l/
 |---|---|
 | TS / RN / Expo / Node | npm private package (GitHub Packages; invited token) |
 | iOS | Swift Package (private repo URL; resolvable in Xcode once invited) |
-| Android | Maven (`com.settlepal:guardkit:8.0.0`) |
+| Android | Maven (`com.settlepal:guardkit:1.0.0`) |
 | Flutter | pubspec git dependency (invited) or Release attachments |
 | WeChat mini-program | Release attachment `guard-kit-miniprogram.zip` |
 | Cloud Worker | Release attachment `guard-kit-worker.zip` (dist-only) |

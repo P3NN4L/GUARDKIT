@@ -2,7 +2,7 @@
 
 **「权重雷达」五引擎协同的端内反诈打分系统**：每条消息由四个互补的识别引擎（新一代语义引擎 v8 + 规则匹配引擎 v7 + 两个不同算法的校验引擎）独立打分、加权融合出最终判决，规则层（机构白名单三族）持否决权；裁判另提供回复质量评估。**零依赖、完全离线、单条消息 <0.1ms**，支持简体/繁体/粤语/英文，可嵌入任何 App——银行、社区、聊天、支付、教育。只输出风险概率与档位，不生成文本、不联网、不上传任何数据。
 
-- 当前版本：`@p3nn4l/guard-kit@8.0.0`（五引擎系统；npm 包内含雷达/裁判/规则层/多轮语境全部端内基座，新一代引擎的识别模型经 Release 附件/CDN 分发，不占安装包）
+- 当前版本：`@p3nn4l/guard-kit@1.0.0`（五引擎系统；npm 包内含雷达/裁判/规则层/多轮语境全部端内基座，新一代引擎的识别模型经 Release 附件/CDN 分发，不占安装包）
 - 分发：GitHub Packages 私有注册表 + Release 附件（受邀访问，见[权限边界](#谁能看到什么权限边界)）
 - 许可：**个人与非商业用途免费，商用需付费授权**（详见 [LICENSE](LICENSE.txt)）
 - 本仓为接入文档与公开基准；不含引擎源码与权重原文
@@ -39,7 +39,7 @@
 ## 安装与使用（TS / React Native / Expo / Node）
 
 ```bash
-npm install @p3nn4l/guard-kit@8.0.0
+npm install @p3nn4l/guard-kit@1.0.0
 ```
 
 ```ts
@@ -64,7 +64,7 @@ replyScore(reply);
 |---|---|
 | TS / RN / Expo / Node | npm 私有包（GitHub Packages，受邀 token） |
 | iOS | Swift Package（私有仓 URL，受邀授权后 Xcode 直接解析） |
-| Android | Maven（`com.settlepal:guardkit:8.0.0`） |
+| Android | Maven（`com.settlepal:guardkit:1.0.0`） |
 | Flutter | pubspec git 依赖（受邀）或 Release 附件 |
 | 微信小程序 | Release 附件 `guard-kit-miniprogram.zip` |
 | 云端 Worker | Release 附件 `guard-kit-worker.zip`（dist-only） |

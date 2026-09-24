@@ -1,8 +1,8 @@
 # guard-kit — On-Device Anti-Fraud Engine
 
-An independently distributed on-device scam-scoring engine (kit): **zero dependencies, fully offline, <0.1ms per message**, supporting Simplified/Traditional Chinese, Cantonese and English — embeddable into any app: banking, community, chat, payments, education. It outputs risk probabilities and bands only; it never generates text, never goes online, never uploads data.
+**A five-engine on-device anti-fraud scoring system**: every message is scored independently by four engines (the v8 distilled-student primary + Radar v7 + SVM + NB) and fused into the final verdict by weighted voting, with the rules layer (three institutional-whitelist families) holding veto power; a Referee additionally grades reply quality. **Zero dependencies, fully offline, <0.1ms per message**, supporting Simplified/Traditional Chinese, Cantonese and English — embeddable into any app: banking, community, chat, payments, education. It outputs risk probabilities and bands only; it never generates text, never goes online, never uploads data.
 
-- Released package: `@p3nn4l/guard-kit@7.0.0` (Radar v7 · Referee v6)
+- Current version: `@p3nn4l/guard-kit@8.0.0` (five-engine system; npm package carries the on-device base — radar/referee/rules layer/multi-turn — primary-engine weights via Release attachments/hot-update)
 - Distribution: GitHub Packages private registry + Release attachments (invitation-based; see [permissions](#who-sees-what-permission-boundaries))
 - License: **free for personal & non-commercial use; paid licence for commercial use** (see [LICENSE](LICENSE.txt))
 - This repo hosts the integration docs and public benchmark; it contains no engine source or raw weights
@@ -11,6 +11,7 @@ An independently distributed on-device scam-scoring engine (kit): **zero depende
 
 | Capability | Description |
 |---|---|
+| Five-engine fused verdict | Four heterogeneous scoring engines in weighted fusion + rules-layer veto — single-engine errors are absorbed by the seats; 10 wins out of 11 evaluation sets vs the single-model era |
 | Message risk scoring | Calibrated probability + three bands (high/medium/low) for any SMS/chat message; band thresholds encode FPR semantics |
 | Multi-turn context detection | Pass recent conversation — grooming openers never fire; the moment scam intent appears it triggers, labeled "judged with context" |
 | Reply-quality grading | Four-class quality rating of the user's replies (S/T/Cantonese) for drill & education scenarios |
@@ -20,7 +21,7 @@ An independently distributed on-device scam-scoring engine (kit): **zero depende
 ## Install & usage (TS / React Native / Expo / Node)
 
 ```bash
-npm install @p3nn4l/guard-kit@7.0.0
+npm install @p3nn4l/guard-kit@8.0.0
 ```
 
 ```ts
@@ -45,7 +46,7 @@ Risk control only? Install the smaller radar-only package: `npm install @p3nn4l/
 |---|---|
 | TS / RN / Expo / Node | npm private package (GitHub Packages; invited token) |
 | iOS | Swift Package (private repo URL; resolvable in Xcode once invited) |
-| Android | Maven (`com.settlepal:guardkit:7.0.0`) |
+| Android | Maven (`com.settlepal:guardkit:8.0.0`) |
 | Flutter | pubspec git dependency (invited) or Release attachments |
 | WeChat mini-program | Release attachment `guard-kit-miniprogram.zip` |
 | Cloud Worker | Release attachment `guard-kit-worker.zip` (dist-only) |
@@ -62,13 +63,12 @@ All artifacts are **dist-only**: minified code + type declarations + inlined wei
 | `mlScoreV62()` / `mlScoreV6()` (`/legacy`) | mount legacy weights | per-generation, isomorphic |
 | `createRadar(json)` / `createReferee(json)` | factories: build from a weights string | engine objects |
 
-## Performance (released v7 package, fully reproducible)
+## Performance (v8 five-engine system, fully reproducible)
 
 | Metric | Value |
 |---|---|
-| Per-message latency (TS microbenchmark, 4,900 calls) | mean 0.078ms / p95 0.10ms |
-| Weight size | ~852KB (radar) / same class (referee) |
-| 120 real public SMS (mixed zh/en, real scam + benign) | recall 89.1% @ FPR 1.5% |
+| Five-engine system vs previous single model (v7) | 10 wins out of 11 evaluation sets (conversation-set FPR to zero; institutional-notice FPR halved) |
+| 120 real public SMS (mixed zh/en) | radar seat solo: recall 89.1% @ FPR 1.5% |
 | Reconstructed real HK case set (12 scam families) | high-band FPR 0% |
 | Ultra-short variant probes (zh/en) | 2/2 detected |
 | Reference: flagship cloud LLM few-shot (same real SMS) | recall 58.2% @ FPR 3.1% — plus network, per-call cost, seconds of latency |
